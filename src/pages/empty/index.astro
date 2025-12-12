@@ -1,0 +1,39 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const title = 'empty';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={title} />
+	</head>
+	<body>
+		<Header />
+		<main class="page">
+			<h1 class="page__title">empty</h1>
+			<p class="page__text">placeholder</p>
+		</main>
+		<Footer />
+
+		<style>
+			.page {
+				min-height: 100vh;
+				padding: 22px 28px 84px 28px;
+			}
+			.page__title {
+				font-size: 20px;
+				font-weight: 400;
+				margin: 0 0 18px 0;
+				color: var(--fg);
+			}
+			.page__text {
+				font-size: 16px;
+				margin: 0;
+			}
+		</style>
+	</body>
+</html>

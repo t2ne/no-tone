@@ -12,39 +12,282 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 	</head>
 	<body>
 		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to <a href="https://docs.astro.build/"
-					>read the docs
-				</a> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out <a
-					href="https://github.com/Charca/astro-blog-template"
-					>astro-blog-template
-				</a> by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+		<main class="desktop" aria-label="Desktop">
+			<a class="icon" data-icon="folder-empty" href="/empty">
+				<span class="icon__glyph" aria-hidden="true">
+					<img src="/black.png" alt="empty" width="96" height="72" loading="eager" decoding="async" />
+				</span>
+				<span class="icon__label">empty</span>
+			</a>
+
+			<a class="icon" data-icon="folder-thoughts" href="/thoughts">
+				<span class="icon__glyph" aria-hidden="true">
+					<img src="/gray.png" alt="thoughts" width="96" height="72" loading="eager" decoding="async" />
+				</span>
+				<span class="icon__label">thoughts</span>
+			</a>
 		</main>
 		<Footer />
+
+		<script is:inline>
+			(() => {
+				const STORAGE_KEY = 'desktop:iconPositions:v1';
+
+				const icons = Array.from(document.querySelectorAll('.icon[data-icon]'));
+				if (!icons.length) return;
+
+				const load = () => {
+					try {
+						const raw = localStorage.getItem(STORAGE_KEY);
+						if (!raw) return {};
+						const data = JSON.parse(raw);
+						return typeof data === 'object' && data ? data : {};
+					} catch {
+						return {};
+					}
+				};
+
+				const save = (positions) => {
+					try {
+						localStorage.setItem(STORAGE_KEY, JSON.stringify(positions));
+					} catch {
+						// no-op
+					}
+				};
+
+				const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+				const positions = { ...load() };
+				const desktop = document.querySelector('.desktop');
+
+				const getDefaultPosition = (id) => {
+					const width = window.innerWidth;
+					const height = window.innerHeight;
+					switch (id) {
+						case 'folder-empty':
+							return { x: width * 0.5, y: height * 0.4 };
+						case 'folder-thoughts':
+							return { x: width * 0.2, y: height * 0.15 };
+						default:
+							return { x: 120, y: 180 };
+					}
+				};
+				const getEnvironment = () => {
+					const desktopRect = desktop?.getBoundingClientRect();
+					const width = desktopRect?.width ?? window.innerWidth;
+					const height = desktopRect?.height ?? window.innerHeight;
+
+					const toDesktopRect = (rect) => {
+						if (!rect || !desktopRect) return null;
+						return {
+							left: rect.left - desktopRect.left,
+							top: rect.top - desktopRect.top,
+							right: rect.right - desktopRect.left,
+							bottom: rect.bottom - desktopRect.top,
+						};
+					};
+
+					const barriers = [];
+					const toggleEl = document.querySelector('.topbar__toggle');
+					const footerNavEl = document.querySelector('.bottombar__nav');
+
+					if (toggleEl) {
+						const r = toDesktopRect(toggleEl.getBoundingClientRect());
+						if (r) {
+							barriers.push({
+								left: r.left - 12,
+								top: r.top - 12,
+								right: r.right + 12,
+								bottom: r.bottom + 12,
+							});
+						}
+					}
+
+					if (footerNavEl) {
+						const r = toDesktopRect(footerNavEl.getBoundingClientRect());
+						if (r) {
+							barriers.push({
+								left: r.left - 16,
+								top: r.top - 16,
+								right: r.right + 16,
+								bottom: r.bottom + 16,
+							});
+						}
+					}
+
+					return { width, height, barriers };
+				};
+
+				const applyPosition = (el) => {
+					const id = el.getAttribute('data-icon');
+					if (!id) return;
+					const existing = positions[id];
+					const p = existing ?? getDefaultPosition(id);
+					positions[id] = p;
+					el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
+				};
+
+				icons.forEach((el) => applyPosition(el));
+
+				const select = (target) => {
+					icons.forEach((el) => {
+						el.classList.toggle('is-selected', target && el === target);
+					});
+				};
+
+				if (desktop) {
+					desktop.addEventListener('pointerdown', (event) => {
+						const target = event.target;
+						if (!(target instanceof Element)) return;
+						if (!target.closest('.icon')) {
+							select(null);
+						}
+					});
+				}
+
+				icons.forEach((el) => {
+					el.addEventListener('pointerdown', (event) => {
+						if (event.button !== 0) return;
+						const id = el.getAttribute('data-icon');
+						if (!id) return;
+
+						event.preventDefault();
+
+						const start = positions[id] ?? getDefaultPosition(id);
+						const startX = event.clientX;
+						const startY = event.clientY;
+						let moved = false;
+						select(el);
+
+						el.setPointerCapture(event.pointerId);
+						el.classList.add('is-dragging');
+						el.style.zIndex = '10';
+
+						const env = getEnvironment();
+						const topGuard = 0;
+						const sideGuard = 16;
+
+						const onMove = (e) => {
+							e.preventDefault();
+							const dx = e.clientX - startX;
+							const dy = e.clientY - startY;
+							if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+
+							const maxX = Math.max(0, env.width - el.offsetWidth - sideGuard);
+							const maxY = Math.max(0, env.height - el.offsetHeight - sideGuard);
+
+							let nextX = clamp(start.x + dx, sideGuard, maxX);
+							let nextY = clamp(start.y + dy, topGuard, maxY);
+
+							const iconRect = {
+								left: nextX,
+								top: nextY,
+								right: nextX + el.offsetWidth,
+								bottom: nextY + el.offsetHeight,
+							};
+
+							for (const barrier of env.barriers) {
+								const intersects = !(
+									iconRect.right < barrier.left ||
+									iconRect.left > barrier.right ||
+									iconRect.bottom < barrier.top ||
+									iconRect.top > barrier.bottom
+								);
+
+								if (intersects) {
+									const iconCenterX = (iconRect.left + iconRect.right) / 2;
+									const barrierCenterX = (barrier.left + barrier.right) / 2;
+									if (iconCenterX <= barrierCenterX) {
+										nextX = barrier.left - el.offsetWidth - 8;
+									} else {
+										nextX = barrier.right + 8;
+									}
+								}
+							}
+
+							positions[id] = {
+								x: clamp(nextX, sideGuard, maxX),
+								y: clamp(nextY, topGuard, maxY),
+							};
+							applyPosition(el);
+						};
+
+						const onUp = () => {
+							el.classList.remove('is-dragging');
+							el.style.zIndex = '';
+							save(positions);
+							window.removeEventListener('pointermove', onMove);
+							window.removeEventListener('pointerup', onUp);
+
+							// Prevent accidental navigation after drag
+							if (moved) {
+								const href = el.getAttribute('href');
+								el.addEventListener(
+									'click',
+									(e) => {
+										if (href) e.preventDefault();
+									},
+									{ once: true }
+								);
+							}
+						};
+
+						window.addEventListener('pointermove', onMove);
+						window.addEventListener('pointerup', onUp, { once: true });
+					});
+
+					el.addEventListener('click', () => {
+						select(el);
+					});
+				});
+			})();
+		</script>
+
+		<style>
+			.desktop {
+				position: relative;
+				min-height: 100vh;
+				overflow: hidden;
+			}
+			.icon {
+				position: absolute;
+				left: 0;
+				top: 0;
+				display: grid;
+				justify-items: center;
+				gap: 10px;
+				text-decoration: none;
+				color: var(--fg);
+				user-select: none;
+				touch-action: none;
+				will-change: transform;
+				transition: transform 120ms ease-out;
+				cursor: grab;
+			}
+			.icon.is-dragging {
+				cursor: grabbing;
+				transition: none;
+			}
+			.icon__glyph {
+				display: block;
+				width: 72px;
+				height: 54px;
+			}
+			.icon__label {
+				font-size: 12px;
+				letter-spacing: 0.02em;
+				text-transform: lowercase;
+				margin-top: 6px;
+				color: var(--desktop-label);
+			}
+			.icon.is-selected::before {
+				content: '';
+				position: absolute;
+				inset: -16px -22px;
+				border: 2px dotted var(--desktop-border);
+				border-radius: 2px;
+				pointer-events: none;
+			}
+		</style>
 	</body>
 </html>
