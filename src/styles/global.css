@@ -109,6 +109,7 @@ img {
   max-width: 100%;
   height: auto;
   border-radius: 8px;
+  image-rendering: pixelated;
 }
 code {
   padding: 2px 5px;
