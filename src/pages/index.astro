@@ -31,7 +31,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 		<script is:inline>
 			(() => {
-				const STORAGE_KEY = 'desktop:iconPositions:v1';
+				const STORAGE_KEY = 'desktop:iconPositions:v2';
 
 				const icons = Array.from(document.querySelectorAll('.icon[data-icon]'));
 				if (!icons.length) return;
@@ -57,21 +57,16 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 				const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-				const positions = { ...load() };
-				const desktop = document.querySelector('.desktop');
-
-				const getDefaultPosition = (id) => {
-					const width = window.innerWidth;
-					const height = window.innerHeight;
-					switch (id) {
-						case 'folder-empty':
-							return { x: width * 0.5, y: height * 0.4 };
-						case 'folder-thoughts':
-							return { x: width * 0.2, y: height * 0.15 };
-						default:
-							return { x: 120, y: 180 };
-					}
+				const DEFAULTS = {
+					'folder-empty': { xRatio: 0.5, yRatio: 0.4 },
+					'folder-thoughts': { xRatio: 0.2, yRatio: 0.18 },
 				};
+
+				const positions = { ...DEFAULTS, ...load() };
+				const desktop = document.querySelector('.desktop');
+				const TOP_GUARD = 0;
+				const SIDE_GUARD = 16;
+
 				const getEnvironment = () => {
 					const desktopRect = desktop?.getBoundingClientRect();
 					const width = desktopRect?.width ?? window.innerWidth;
@@ -118,16 +113,32 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					return { width, height, barriers };
 				};
 
-				const applyPosition = (el) => {
+				const applyPosition = (el, env) => {
 					const id = el.getAttribute('data-icon');
 					if (!id) return;
-					const existing = positions[id];
-					const p = existing ?? getDefaultPosition(id);
-					positions[id] = p;
-					el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
+					const base = positions[id] ?? DEFAULTS[id] ?? { xRatio: 0.3, yRatio: 0.3 };
+					const width = env.width;
+					const height = env.height;
+					const iconWidth = el.offsetWidth;
+					const iconHeight = el.offsetHeight;
+					const maxX = Math.max(0, width - iconWidth - SIDE_GUARD);
+					const maxY = Math.max(0, height - iconHeight - SIDE_GUARD);
+
+					let x = base.xRatio * width;
+					let y = base.yRatio * height;
+
+					x = clamp(x, SIDE_GUARD, maxX);
+					y = clamp(y, TOP_GUARD, maxY);
+					positions[id] = {
+						xRatio: width ? x / width : base.xRatio,
+						yRatio: height ? y / height : base.yRatio,
+					};
+
+					el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
 				};
 
-				icons.forEach((el) => applyPosition(el));
+				const initialEnv = getEnvironment();
+				icons.forEach((el) => applyPosition(el, initialEnv));
 
 				const select = (target) => {
 					icons.forEach((el) => {
@@ -153,7 +164,12 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 						event.preventDefault();
 
-						const start = positions[id] ?? getDefaultPosition(id);
+						const env = getEnvironment();
+						const base = positions[id] ?? DEFAULTS[id] ?? { xRatio: 0.3, yRatio: 0.3 };
+						const start = {
+							x: base.xRatio * env.width,
+							y: base.yRatio * env.height,
+						};
 						const startX = event.clientX;
 						const startY = event.clientY;
 						let moved = false;
@@ -163,21 +179,17 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 						el.classList.add('is-dragging');
 						el.style.zIndex = '10';
 
-						const env = getEnvironment();
-						const topGuard = 0;
-						const sideGuard = 16;
-
 						const onMove = (e) => {
 							e.preventDefault();
 							const dx = e.clientX - startX;
 							const dy = e.clientY - startY;
 							if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
 
-							const maxX = Math.max(0, env.width - el.offsetWidth - sideGuard);
-							const maxY = Math.max(0, env.height - el.offsetHeight - sideGuard);
+							const maxX = Math.max(0, env.width - el.offsetWidth - SIDE_GUARD);
+							const maxY = Math.max(0, env.height - el.offsetHeight - SIDE_GUARD);
 
-							let nextX = clamp(start.x + dx, sideGuard, maxX);
-							let nextY = clamp(start.y + dy, topGuard, maxY);
+							let nextX = clamp(start.x + dx, SIDE_GUARD, maxX);
+							let nextY = clamp(start.y + dy, TOP_GUARD, maxY);
 
 							const iconRect = {
 								left: nextX,
@@ -205,11 +217,13 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 								}
 							}
 
+							nextX = clamp(nextX, SIDE_GUARD, maxX);
+							nextY = clamp(nextY, TOP_GUARD, maxY);
 							positions[id] = {
-								x: clamp(nextX, sideGuard, maxX),
-								y: clamp(nextY, topGuard, maxY),
+								xRatio: env.width ? nextX / env.width : 0,
+								yRatio: env.height ? nextY / env.height : 0,
 							};
-							applyPosition(el);
+							el.style.transform = `translate3d(${nextX}px, ${nextY}px, 0)`;
 						};
 
 						const onUp = () => {
@@ -239,6 +253,12 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					el.addEventListener('click', () => {
 						select(el);
 					});
+				});
+
+				window.addEventListener('resize', () => {
+					const env = getEnvironment();
+					icons.forEach((el) => applyPosition(el, env));
+					save(positions);
 				});
 			})();
 		</script>
