@@ -71,7 +71,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 				const positions = { ...DEFAULTS, ...load() };
 				const desktop = document.querySelector('.desktop');
-				const TOP_GUARD = 0;
+				const TOP_GUARD = 16;
 				const SIDE_GUARD = 16;
 
 				const getEnvironment = () => {
@@ -310,10 +310,14 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 			.icon.is-selected::before {
 				content: '';
 				position: absolute;
-				inset: -16px -22px;
+				inset: -8px -8px;
 				border: 2px dotted var(--desktop-border);
 				border-radius: 2px;
 				pointer-events: none;
+			}
+			.icon__glyph img {
+				display: block;
+				margin: 0 auto;
 			}
 		</style>
 	</body>

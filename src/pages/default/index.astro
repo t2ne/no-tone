@@ -3,7 +3,7 @@ import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
-const title = 'default';
+const title = 'usr';
 ---
 
 <!doctype html>
@@ -13,26 +13,149 @@ const title = 'default';
 	</head>
 	<body>
 		<Header />
-		<main class="page">
-			<h1 class="page__title">default</h1>
-			<p class="page__text">placeholder</p>
+		<main class="page" aria-label="File explorer">
+			<h1 class="page__title">usr/</h1>
+			<ul class="tree" data-root>
+				<li class="tree__item tree__item--folder" data-node="projects">
+					<button class="tree__label" type="button">
+						<span class="tree__chevron" aria-hidden="true">›</span>
+						<span class="tree__name">projects/</span>
+					</button>
+					<ul class="tree__children" hidden data-kind="projects"></ul>
+				</li>
+				<li class="tree__item tree__item--folder" data-node="exp">
+					<button class="tree__label" type="button">
+						<span class="tree__chevron" aria-hidden="true">›</span>
+						<span class="tree__name">exp/</span>
+					</button>
+					<ul class="tree__children" hidden>
+						<li class="tree__item tree__item--file">resume.txt</li>
+					</ul>
+				</li>
+				<li class="tree__item tree__item--folder" data-node="misc">
+					<button class="tree__label" type="button">
+						<span class="tree__chevron" aria-hidden="true">›</span>
+						<span class="tree__name">misc/</span>
+					</button>
+					<ul class="tree__children" hidden>
+						<li class="tree__item tree__item--file">about.txt</li>
+					</ul>
+				</li>
+			</ul>
 		</main>
 		<Footer />
+		<script is:inline>
+			(() => {
+				const root = document.querySelector('.tree[data-root]');
+				if (!root) return;
+
+				const toggleFolder = (item) => {
+					const children = item.querySelector('.tree__children');
+					const label = item.querySelector('.tree__label');
+					const chevron = item.querySelector('.tree__chevron');
+					if (!children || !label || !chevron) return;
+
+					const isOpen = !children.hidden;
+					children.hidden = isOpen;
+					item.classList.toggle('is-open', !isOpen);
+					chevron.textContent = !isOpen ? '⌄' : '›';
+				};
+
+				const hydrateProjects = async (container) => {
+					if (!container || container.dataset.loaded === 'true') return;
+					container.dataset.loaded = 'true';
+					try {
+						const res = await fetch('https://api.github.com/users/t2ne/repos?per_page=50&sort=updated');
+						if (!res.ok) return;
+						const repos = await res.json();
+						repos.forEach((repo) => {
+							if (!repo || !repo.name || !repo.html_url) return;
+							const li = document.createElement('li');
+							li.className = 'tree__item tree__item--file';
+							const link = document.createElement('a');
+							link.href = repo.html_url;
+							link.target = '_blank';
+							link.rel = 'noreferrer';
+							link.textContent = repo.name;
+							li.appendChild(link);
+							container.appendChild(li);
+						});
+					} catch {
+						// ignore network errors
+					}
+				};
+
+				root.addEventListener('click', (event) => {
+					const target = event.target;
+					if (!(target instanceof Element)) return;
+					const label = target.closest('.tree__label');
+					if (!label) return;
+					const item = label.closest('.tree__item');
+					if (!item) return;
+
+					const children = item.querySelector('.tree__children');
+					if (children && children.dataset.kind === 'projects') {
+						hydrateProjects(children);
+					}
+
+					toggleFolder(item);
+				});
+			})();
+		</script>
 
 		<style>
 			.page {
 				min-height: 100vh;
-				padding: 22px 28px 84px 28px;
+				padding: 80px 28px 84px 28px;
 			}
 			.page__title {
-				font-size: 20px;
+				font-size: 16px;
 				font-weight: 400;
 				margin: 0 0 18px 0;
-				color: var(--fg);
+				color: var(--desktop-label);
 			}
-			.page__text {
-				font-size: 16px;
+			.tree {
+				list-style: none;
 				margin: 0;
+				padding: 0;
+				font-size: 14px;
+			}
+			.tree__item {
+				margin: 4px 0;
+			}
+			.tree__label {
+				border: none;
+				background: transparent;
+				color: var(--desktop-label);
+				font: inherit;
+				padding: 0;
+				cursor: pointer;
+				text-align: left;
+			}
+			.tree__label:hover {
+				text-decoration: underline;
+			}
+			.tree__chevron {
+				display: inline-block;
+				width: 1ch;
+				margin-right: 6px;
+			}
+			.tree__name {
+				letter-spacing: 0.02em;
+			}
+			.tree__children {
+				list-style: none;
+				margin: 0;
+				padding: 0 0 0 20px;
+			}
+			.tree__item--file a,
+			.tree__item--file {
+				color: var(--desktop-label);
+				font-size: 13px;
+				text-decoration: none;
+			}
+			.tree__item--file a:hover {
+				text-decoration: underline;
 			}
 		</style>
 	</body>
