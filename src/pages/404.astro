@@ -1,0 +1,34 @@
+---
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const title = '404';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={title} />
+	</head>
+	<body>
+		<Header />
+		<main class="page" aria-label="Not found">
+			<h1 class="page__title">404/</h1>
+		</main>
+		<Footer />
+
+		<style>
+			.page {
+				min-height: 100vh;
+				padding: 90px 28px 84px 28px;
+			}
+			.page__title {
+				font-size: 16px;
+				font-weight: 400;
+				margin: 0 0 18px 0;
+				color: var(--desktop-label);
+			}
+		</style>
+	</body>
+</html>
