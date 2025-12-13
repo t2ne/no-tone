@@ -1,0 +1,375 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+
+const title = 'usr';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={title} />
+	</head>
+	<body>
+		<Header />
+		<main class="page" aria-label="File explorer">
+			<h1 class="page__title">usr/</h1>
+			<ul class="tree" data-root>
+				<li class="tree__item tree__item--folder" data-node="projects">
+					<button class="tree__label" type="button">
+						<span class="tree__chevron" aria-hidden="true">›</span>
+						<span class="tree__name">projects/</span>
+					</button>
+					<ul class="tree__children" hidden data-kind="projects"></ul>
+				</li>
+				<li class="tree__item tree__item--folder" data-node="stack">
+					<button class="tree__label" type="button">
+						<span class="tree__chevron" aria-hidden="true">›</span>
+						<span class="tree__name">stack/</span>
+					</button>
+					<ul class="tree__children" hidden>
+						<li class="tree__item tree__item--folder" data-node="frameworks">
+							<button class="tree__label" type="button">
+								<span class="tree__chevron" aria-hidden="true">›</span>
+								<span class="tree__name">frameworks/</span>
+							</button>
+							<ul class="tree__children" hidden>
+								<li class="tree__item tree__item--file"><a href="https://lit.dev/" target="_blank" rel="noreferrer">lit</a></li>
+								<li class="tree__item tree__item--file"><a href="https://angular.dev/" target="_blank" rel="noreferrer">angular</a></li>
+								<li class="tree__item tree__item--file"><a href="https://getbootstrap.com/" target="_blank" rel="noreferrer">bootstrap</a></li>
+								<li class="tree__item tree__item--file"><a href="https://react.dev/" target="_blank" rel="noreferrer">react components</a></li>
+								<li class="tree__item tree__item--file"><a href="https://svelte.dev/" target="_blank" rel="noreferrer">svelte</a></li>
+								<li class="tree__item tree__item--file"><a href="https://ionicframework.com/" target="_blank" rel="noreferrer">ionic</a></li>
+							</ul>
+						</li>
+						<li class="tree__item tree__item--folder" data-node="dbs">
+							<button class="tree__label" type="button">
+								<span class="tree__chevron" aria-hidden="true">›</span>
+								<span class="tree__name">dbs/</span>
+							</button>
+							<ul class="tree__children" hidden>
+								<li class="tree__item tree__item--file"><a href="https://www.mysql.com/" target="_blank" rel="noreferrer">mysql</a></li>
+								<li class="tree__item tree__item--file"><a href="https://firebase.google.com/" target="_blank" rel="noreferrer">firebase</a></li>
+								<li class="tree__item tree__item--file"><a href="https://httpd.apache.org/" target="_blank" rel="noreferrer">apache server</a></li>
+								<li class="tree__item tree__item--file"><a href="https://nodejs.org/" target="_blank" rel="noreferrer">node.js</a></li>
+								<li class="tree__item tree__item--file"><a href="https://www.docker.com/" target="_blank" rel="noreferrer">docker</a></li>
+								<li class="tree__item tree__item--file"><a href="https://www.postgresql.org/" target="_blank" rel="noreferrer">postgresql</a></li>
+								<li class="tree__item tree__item--file"><a href="https://www.mongodb.com/" target="_blank" rel="noreferrer">mongodb</a></li>
+								<li class="tree__item tree__item--file"><a href="https://flask.palletsprojects.com/" target="_blank" rel="noreferrer">flask</a></li>
+							</ul>
+						</li>
+						<li class="tree__item tree__item--folder" data-node="tools">
+							<button class="tree__label" type="button">
+								<span class="tree__chevron" aria-hidden="true">›</span>
+								<span class="tree__name">tools/</span>
+							</button>
+							<ul class="tree__children" hidden>
+								<li class="tree__item tree__item--file"><a href="https://git-scm.com/" target="_blank" rel="noreferrer">git</a></li>
+								<li class="tree__item tree__item--file"><a href="https://github.com/" target="_blank" rel="noreferrer">github</a></li>
+								<li class="tree__item tree__item--file"><a href="https://www.cloudflare.com/" target="_blank" rel="noreferrer">cloudflare</a></li>
+								<li class="tree__item tree__item--file"><a href="https://vercel.com/" target="_blank" rel="noreferrer">vercel</a></li>
+								<li class="tree__item tree__item--file"><a href="https://www.netlify.com/" target="_blank" rel="noreferrer">netlify</a></li>
+								<li class="tree__item tree__item--file"><a href="https://render.com/" target="_blank" rel="noreferrer">render.com</a></li>
+							</ul>
+						</li>
+						<li class="tree__item tree__item--folder" data-node="design">
+							<button class="tree__label" type="button">
+								<span class="tree__chevron" aria-hidden="true">›</span>
+								<span class="tree__name">design/</span>
+							</button>
+							<ul class="tree__children" hidden>
+								<li class="tree__item tree__item--file"><a href="https://www.figma.com/" target="_blank" rel="noreferrer">figma</a></li>
+								<li class="tree__item tree__item--file"><a href="https://www.framer.com/" target="_blank" rel="noreferrer">framer</a></li>
+								<li class="tree__item tree__item--file"><a href="https://www.adobe.com/products/illustrator.html" target="_blank" rel="noreferrer">illustrator</a></li>
+								<li class="tree__item tree__item--file"><a href="https://www.adobe.com/products/premiere.html" target="_blank" rel="noreferrer">premiere pro</a></li>
+								<li class="tree__item tree__item--file"><a href="https://www.blender.org/" target="_blank" rel="noreferrer">blender</a></li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li class="tree__item tree__item--folder" data-node="exp">
+					<button class="tree__label" type="button">
+						<span class="tree__chevron" aria-hidden="true">›</span>
+						<span class="tree__name">exp/</span>
+					</button>
+					<ul class="tree__children" hidden>
+						<li class="tree__item tree__item--folder" data-node="jobs">
+							<button class="tree__label" type="button">
+								<span class="tree__chevron" aria-hidden="true">›</span>
+								<span class="tree__name">jobs/</span>
+							</button>
+							<ul class="tree__children" hidden>
+								<li class="tree__item tree__item--file">public-sector-ai-project_sep25-present.txt</li>
+								<li class="tree__item tree__item--file">cloud-management-internship_aug24-jul25.txt</li>
+							</ul>
+						</li>
+						<li class="tree__item tree__item--folder" data-node="education">
+							<button class="tree__label" type="button">
+								<span class="tree__chevron" aria-hidden="true">›</span>
+								<span class="tree__name">education/</span>
+							</button>
+							<ul class="tree__children" hidden>
+								<li class="tree__item tree__item--file">masters-software-engineering_sep25-jun27.txt</li>
+								<li class="tree__item tree__item--file">bachelors-computer-science_sep22-jun25.txt</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+				<li class="tree__item tree__item--folder" data-node="misc">
+					<button class="tree__label" type="button">
+						<span class="tree__chevron" aria-hidden="true">›</span>
+						<span class="tree__name">misc/</span>
+					</button>
+					<ul class="tree__children" hidden>
+						<li class="tree__item tree__item--folder" data-node="skills">
+							<button class="tree__label" type="button">
+								<span class="tree__chevron" aria-hidden="true">›</span>
+								<span class="tree__name">skills/</span>
+							</button>
+							<ul class="tree__children" hidden>
+								<li class="tree__item tree__item--file">problem-solving.txt</li>
+								<li class="tree__item tree__item--file">web-components.txt</li>
+								<li class="tree__item tree__item--file">ui-ux-design.txt</li>
+								<li class="tree__item tree__item--file">full-stack-development.txt</li>
+								<li class="tree__item tree__item--file">security-and-privacy.txt</li>
+							</ul>
+						</li>
+						<li class="tree__item tree__item--folder" data-node="interests">
+							<button class="tree__label" type="button">
+								<span class="tree__chevron" aria-hidden="true">›</span>
+								<span class="tree__name">interests/</span>
+							</button>
+							<ul class="tree__children" hidden>
+								<li class="tree__item tree__item--file">weightlifting.txt</li>
+								<li class="tree__item tree__item--file">nature-walks.txt</li>
+								<li class="tree__item tree__item--file">pet-training.txt</li>
+								<li class="tree__item tree__item--file">chess.txt</li>
+								<li class="tree__item tree__item--file">formula-1.txt</li>
+								<li class="tree__item tree__item--file">motorcycles.txt</li>
+							</ul>
+						</li>
+					</ul>
+				</li>
+			</ul>
+		</main>
+		<Footer />
+		<script is:inline>
+			(() => {
+				const root = document.querySelector('.tree[data-root]');
+				if (!root) return;
+
+				// Ensure dynamically-created nodes receive the same Astro scope attribute
+				const scopeAttr = Array.from(root.attributes).find((attr) => attr.name.startsWith('data-astro-cid-'));
+				const applyScope = (el) => {
+					if (!scopeAttr || !el || !(el instanceof Element)) return;
+					el.setAttribute(scopeAttr.name, scopeAttr.value ?? '');
+				};
+
+				const toggleFolder = (item) => {
+					const children = item.querySelector('.tree__children');
+					const label = item.querySelector('.tree__label');
+					const chevron = item.querySelector('.tree__chevron');
+					if (!children || !label || !chevron) return;
+
+					const isOpen = !children.hidden;
+					children.hidden = isOpen;
+					item.classList.toggle('is-open', !isOpen);
+					chevron.textContent = !isOpen ? '⌄' : '›';
+				};
+
+				const CACHE_KEY = 'usr:projects';
+
+				const loadCachedProjects = () => {
+					try {
+						const raw = sessionStorage.getItem(CACHE_KEY);
+						if (!raw) return null;
+						const parsed = JSON.parse(raw);
+						return Array.isArray(parsed) ? parsed : null;
+					} catch {
+						return null;
+					}
+				};
+
+				const saveCachedProjects = (items) => {
+					try {
+						sessionStorage.setItem(CACHE_KEY, JSON.stringify(items));
+					} catch {
+						// ignore quota errors
+					}
+				};
+
+				const hydrateProjects = async (container) => {
+					if (!container || container.dataset.loaded === 'true') return;
+					container.dataset.loaded = 'true';
+
+					let simplified = loadCachedProjects();
+					if (!simplified) {
+						try {
+							const res = await fetch('https://api.github.com/users/t2ne/repos?per_page=100&sort=updated');
+							if (!res.ok) return;
+							const repos = await res.json();
+							simplified = repos
+								.filter((repo) => repo && repo.name && repo.html_url)
+								.map((repo) => ({
+									name: repo.name,
+									url: repo.html_url,
+									language: repo.language || 'Other',
+								}));
+							saveCachedProjects(simplified);
+						} catch {
+							return;
+						}
+					}
+
+					const groups = new Map();
+					simplified.forEach((repo) => {
+						const key = (repo.language || 'Other').toString();
+						if (!groups.has(key)) groups.set(key, []);
+						groups.get(key).push(repo);
+					});
+
+					const languages = Array.from(groups.keys()).sort((a, b) => a.localeCompare(b));
+
+					languages.forEach((language) => {
+						const repos = groups.get(language);
+						if (!repos || !repos.length) return;
+
+						const item = document.createElement('li');
+						item.className = 'tree__item tree__item--folder';
+						applyScope(item);
+
+						const button = document.createElement('button');
+						button.type = 'button';
+						button.className = 'tree__label';
+						applyScope(button);
+
+						const chev = document.createElement('span');
+						chev.className = 'tree__chevron';
+						chev.textContent = '›';
+						applyScope(chev);
+
+						const nameSpan = document.createElement('span');
+						nameSpan.className = 'tree__name';
+						nameSpan.textContent = `${language.toLowerCase()}/`;
+						applyScope(nameSpan);
+
+						button.appendChild(chev);
+						button.appendChild(nameSpan);
+
+						const childList = document.createElement('ul');
+						childList.className = 'tree__children';
+						childList.hidden = true;
+						applyScope(childList);
+
+						repos.forEach((repo) => {
+							const li = document.createElement('li');
+							li.className = 'tree__item tree__item--file';
+							applyScope(li);
+							const link = document.createElement('a');
+							link.href = repo.url;
+							link.target = '_blank';
+							link.rel = 'noreferrer';
+							link.textContent = repo.name;
+							applyScope(link);
+							li.appendChild(link);
+							childList.appendChild(li);
+						});
+
+						item.appendChild(button);
+						item.appendChild(childList);
+						container.appendChild(item);
+					});
+				};
+
+				root.addEventListener('click', (event) => {
+					const target = event.target;
+					if (!(target instanceof Element)) return;
+					const label = target.closest('.tree__label');
+					if (!label) return;
+					const item = label.closest('.tree__item');
+					if (!item) return;
+
+					const children = item.querySelector('.tree__children');
+					if (children && children.dataset.kind === 'projects') {
+						hydrateProjects(children);
+					}
+
+					toggleFolder(item);
+				});
+			})();
+		</script>
+
+		<style>
+			.page {
+				min-height: 100vh;
+				padding: 90px 28px 84px 28px;
+			}
+			.page__title {
+				font-size: 16px;
+				font-weight: 400;
+				margin: 0 0 18px 0;
+				color: var(--desktop-label);
+			}
+			.tree {
+				list-style: none;
+				margin: 0;
+				padding: 0;
+				font-size: 14px;
+			}
+			.tree__item {
+				position: relative;
+				margin: 4px 0;
+				list-style: none;
+			}
+			.tree__label {
+				border: 0;
+				border-radius: 0;
+				background: none;
+				box-shadow: none;
+				color: var(--desktop-label);
+				font: inherit;
+				padding: 0;
+				margin: 0;
+				cursor: pointer;
+				text-align: left;
+				appearance: none;
+				-webkit-appearance: none;
+			}
+			.tree__label:hover {
+				text-decoration: underline;
+			}
+			.tree__chevron {
+				display: inline-block;
+				width: 1ch;
+				margin-right: 6px;
+			}
+			.tree__name {
+				letter-spacing: 0.02em;
+			}
+			.tree__children {
+				list-style: none;
+				margin: 0;
+				padding: 0 0 0 20px;
+				border-left: 1px solid var(--border);
+			}
+			.tree__children .tree__item::before {
+				content: '';
+				position: absolute;
+				left: -20px;
+				width: 20px;
+				top: 0.9em;
+				border-bottom: 1px solid var(--border);
+			}
+			.tree__item--file a,
+			.tree__item--file {
+				color: var(--desktop-label);
+				font-size: 13px;
+				text-decoration: none;
+			}
+			.tree__item--file a:hover {
+				text-decoration: underline;
+			}
+		</style>
+	</body>
+</html>

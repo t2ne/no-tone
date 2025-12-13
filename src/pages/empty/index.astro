@@ -13,26 +13,34 @@ const title = 'empty';
 	</head>
 	<body>
 		<Header />
-		<main class="page">
-			<h1 class="page__title">empty</h1>
-			<p class="page__text">placeholder</p>
+		<main class="page" aria-label="Empty desktop">
+			<figure class="page__figure">
+				<img
+					src="/d.jpg"
+					alt="Dog with bared teeth wearing a jeweled collar"
+					loading="lazy"
+					decoding="async"
+					width="236"
+					height="389"
+				/>
+			</figure>
 		</main>
 		<Footer />
 
 		<style>
 			.page {
 				min-height: 100vh;
-				padding: 22px 28px 84px 28px;
+				padding: 90px 28px 84px 28px;
 			}
-			.page__title {
-				font-size: 20px;
-				font-weight: 400;
-				margin: 0 0 18px 0;
-				color: var(--fg);
-			}
-			.page__text {
-				font-size: 16px;
+			.page__figure {
 				margin: 0;
+				max-width: 320px;
+			}
+			.page__figure img {
+				display: block;
+				width: 100%;
+				height: auto;
+				object-fit: cover;
 			}
 		</style>
 	</body>

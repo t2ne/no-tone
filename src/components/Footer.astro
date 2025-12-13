@@ -1,8 +1,9 @@
 ---
-const isHome = Astro.url.pathname === '/';
+const pathname = Astro.url.pathname;
+const isTransparent = pathname === '/' || pathname.startsWith('/usr');
 ---
 
-<footer class={`bottombar${isHome ? ' bottombar--home' : ''}`}>
+<footer class={`bottombar${isTransparent ? ' bottombar--home' : ''}`}>
 	<nav class="bottombar__nav" aria-label="Social">
 		<a class="bottombar__link" href="https://github.com/t2ne" target="_blank" rel="noreferrer">github</a>
 		<span class="bottombar__sep" aria-hidden="true">/</span>
@@ -55,7 +56,7 @@ const isHome = Astro.url.pathname === '/';
 		right: 0;
 		bottom: 0;
 		z-index: 50;
-		padding: 24px 28px 52px 28px;
+		padding: 24px 28px 32px 28px;
 		display: flex;
 		justify-content: center;
 		pointer-events: none;

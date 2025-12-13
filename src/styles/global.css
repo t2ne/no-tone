@@ -10,9 +10,10 @@
   --fg: rgb(var(--gray));
   --fg-strong: rgb(var(--gray-dark));
   --border: rgba(var(--gray), 20%);
+  --selection-border: #4b4b4b;
 
   /* UI chrome (header/footer) + desktop icon colors */
-  --chrome-fg: #7e7e7e;
+  --chrome-fg: #010001;
   --desktop-label: #010001;
   --desktop-border: #010001;
 }
@@ -22,17 +23,10 @@ html[data-theme="dark"] {
   --fg: #ffffff;
   --fg-strong: #ffffff;
   --border: rgba(255, 255, 255, 25%);
+  --selection-border: rgba(255, 255, 255, 70%);
   --chrome-fg: #ffffff;
   --desktop-label: #ffffff;
   --desktop-border: #ffffff;
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  src: url("/fonts/JetBrainsMono-VariableFont_wght.ttf") format("truetype");
-  font-weight: 100 800;
-  font-style: normal;
-  font-display: swap;
 }
 
 html,

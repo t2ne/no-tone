@@ -15,23 +15,23 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		<main class="desktop" aria-label="Desktop">
 			<a class="icon" data-icon="folder-empty" href="/empty">
 				<span class="icon__glyph" aria-hidden="true">
-					<img src="/black.png" alt="empty" width="64" height="64" loading="eager" decoding="async" />
+					<img src="/b.png" alt="empty" width="64" height="64" loading="eager" decoding="async" />
 				</span>
 				<span class="icon__label">empty</span>
 			</a>
 
 			<a class="icon" data-icon="folder-thoughts" href="/thoughts">
 				<span class="icon__glyph" aria-hidden="true">
-					<img src="/gray.png" alt="thoughts" width="64" height="64" loading="eager" decoding="async" />
+					<img src="/g.png" alt="thoughts" width="64" height="64" loading="eager" decoding="async" />
 				</span>
 				<span class="icon__label">thoughts</span>
 			</a>
 
-			<a class="icon" data-icon="folder-default" href="/default">
+			<a class="icon" data-icon="folder-usr" href="/usr">
 				<span class="icon__glyph" aria-hidden="true">
-					<img src="/default.png" alt="default" width="64" height="64" loading="eager" decoding="async" />
+					<img src="/usr.png" alt="usr" width="64" height="64" loading="eager" decoding="async" />
 				</span>
-				<span class="icon__label">default</span>
+				<span class="icon__label">usr</span>
 			</a>
 		</main>
 		<Footer />
@@ -288,12 +288,11 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				user-select: none;
 				touch-action: none;
 				will-change: transform;
-				transition: transform 120ms ease-out;
+				transition: none;
 				cursor: grab;
 			}
 			.icon.is-dragging {
 				cursor: grabbing;
-				transition: none;
 			}
 			.icon__glyph {
 				display: block;
@@ -304,14 +303,14 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				font-size: 12px;
 				letter-spacing: 0.02em;
 				text-transform: lowercase;
-				margin-top: 6px;
+				margin-top: 2px;
 				color: var(--desktop-label);
 			}
 			.icon.is-selected::before {
 				content: '';
 				position: absolute;
-				inset: -8px -8px;
-				border: 2px dotted var(--desktop-border);
+				inset: -6px -6px;
+				border: 2px dotted var(--selection-border);
 				border-radius: 2px;
 				pointer-events: none;
 			}
