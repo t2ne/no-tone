@@ -27,13 +27,16 @@ const canonicalURL = Astro.site
 <!-- Theme bootstrap (runs before first paint) -->
 <script is:inline>
 	(() => {
+		const STORAGE_KEY = 'theme';
 		try {
-			const stored = localStorage.getItem('theme');
-			const prefersDark = window.matchMedia?.('(prefers-color-scheme: dark)')?.matches;
-			const theme = stored === 'light' || stored === 'dark' ? stored : prefersDark ? 'dark' : 'light';
+			const stored = localStorage.getItem(STORAGE_KEY);
+			const theme = stored === 'light' || stored === 'dark' ? stored : 'light';
 			document.documentElement.dataset.theme = theme;
+			if (stored !== theme) {
+				localStorage.setItem(STORAGE_KEY, theme);
+			}
 		} catch {
-			// no-op
+			document.documentElement.dataset.theme = 'light';
 		}
 	})();
 </script>
