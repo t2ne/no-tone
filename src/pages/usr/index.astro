@@ -180,14 +180,19 @@ const title = 'usr';
 					chevron.textContent = !isOpen ? '⌄' : '›';
 				};
 
-				const CACHE_KEY = 'usr:projects';
+				const CACHE_KEY = 'usr:projects:v2';
+				const CACHE_MAX_AGE_MS = 6 * 60 * 60 * 1000; // 6 hours
 
 				const loadCachedProjects = () => {
 					try {
-						const raw = sessionStorage.getItem(CACHE_KEY);
+						const raw = localStorage.getItem(CACHE_KEY);
 						if (!raw) return null;
 						const parsed = JSON.parse(raw);
-						return Array.isArray(parsed) ? parsed : null;
+						if (!parsed || typeof parsed !== 'object') return null;
+						const { items, timestamp } = parsed;
+						if (!Array.isArray(items) || typeof timestamp !== 'number') return null;
+						if (Date.now() - timestamp > CACHE_MAX_AGE_MS) return null;
+						return items;
 					} catch {
 						return null;
 					}
@@ -195,7 +200,8 @@ const title = 'usr';
 
 				const saveCachedProjects = (items) => {
 					try {
-						sessionStorage.setItem(CACHE_KEY, JSON.stringify(items));
+						const payload = JSON.stringify({ items, timestamp: Date.now() });
+						localStorage.setItem(CACHE_KEY, payload);
 					} catch {
 						// ignore quota errors
 					}
@@ -208,16 +214,10 @@ const title = 'usr';
 					let simplified = loadCachedProjects();
 					if (!simplified) {
 						try {
-							const res = await fetch('https://api.github.com/users/t2ne/repos?per_page=100&sort=updated');
+							const res = await fetch('/api/projects.json');
 							if (!res.ok) return;
 							const repos = await res.json();
-							simplified = repos
-								.filter((repo) => repo && repo.name && repo.html_url)
-								.map((repo) => ({
-									name: repo.name,
-									url: repo.html_url,
-									language: repo.language || 'Other',
-								}));
+							simplified = Array.isArray(repos) ? repos : [];
 							saveCachedProjects(simplified);
 						} catch {
 							return;
@@ -283,6 +283,12 @@ const title = 'usr';
 						container.appendChild(item);
 					});
 				};
+
+				// Prefetch projects on page load so the folder opens instantly
+				const projectsContainer = root.querySelector('.tree__children[data-kind="projects"]');
+				if (projectsContainer instanceof HTMLElement) {
+					hydrateProjects(projectsContainer);
+				}
 
 				root.addEventListener('click', (event) => {
 					const target = event.target;

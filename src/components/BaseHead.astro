@@ -21,6 +21,9 @@ const canonicalURL = Astro.site
 <link rel="icon" type="image/png" sizes="32x32" href="/usr.png" />
 <meta name="generator" content={Astro.generator} />
 
+<!-- Preload frequently used desktop icon to avoid first-load lag -->
+<link rel="preload" as="image" href="/usr.png" />
+
 <!-- Cloudflare Fonts (JetBrains Mono Variable) -->
 {jbMonoFontUrl && <link rel="stylesheet" href={jbMonoFontUrl} />}
 
