@@ -5,9 +5,10 @@ interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	preloadProjects?: boolean;
 }
 
-const { title, description, image = '/b.png' } = Astro.props as Props;
+const { title, description, image = '/b.png', preloadProjects = false } = Astro.props as Props;
 const jbMonoFontUrl = import.meta.env.PUBLIC_JB_MONO_FONT_URL;
 
 const canonicalURL = Astro.site
@@ -23,6 +24,11 @@ const canonicalURL = Astro.site
 
 <!-- Cloudflare Fonts (JetBrains Mono Variable) -->
 {jbMonoFontUrl && <link rel="stylesheet" href={jbMonoFontUrl} />}
+
+<!-- Optionally preload projects API for usr/ to shorten critical chains -->
+{preloadProjects && (
+	<link rel="preload" as="fetch" href="/api/projects.json" />
+)}
 
 <!-- Theme bootstrap (runs before first paint) -->
 <script is:inline>
