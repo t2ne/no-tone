@@ -30,9 +30,16 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 		response.headers.set('Cache-Control', 'private, no-store');
 	}
 
+	const url = new URL(context.request.url);
+	const isLocalDev = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
+
+	const scriptSrc = isLocalDev
+		? `script-src 'self' 'nonce-${nonce}' 'unsafe-inline'`
+		: `script-src 'self' 'nonce-${nonce}'`;
+
 	const csp = [
 		"default-src 'self'",
-		`script-src 'self' 'nonce-${nonce}'`,
+		scriptSrc,
 		"style-src 'self' 'unsafe-inline' https:",
 		"img-src 'self' https: data:",
 		"font-src 'self' https: data:",
@@ -40,8 +47,6 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 		"frame-ancestors 'none'",
 		"base-uri 'none'",
 		"object-src 'none'",
-		"trusted-types default",
-		"require-trusted-types-for 'script'",
 	].join('; ');
 
 	response.headers.set(CSP_HEADER, csp);
