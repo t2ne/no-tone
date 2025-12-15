@@ -35,9 +35,9 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 
 	const scriptSrc = isLocalDev
 		? "script-src 'self' 'unsafe-inline'"
-		: `script-src 'self' 'nonce-${nonce}'`;
+		: `script-src 'self' 'nonce-${nonce}' 'unsafe-inline'`;
 
-	const csp = [
+	const directives = [
 		"default-src 'self'",
 		scriptSrc,
 		"style-src 'self' 'unsafe-inline' https:",
@@ -47,7 +47,14 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 		"frame-ancestors 'none'",
 		"base-uri 'none'",
 		"object-src 'none'",
-	].join('; ');
+	];
+
+	if (!isLocalDev) {
+		directives.push("trusted-types default");
+		directives.push("require-trusted-types-for 'script'");
+	}
+
+	const csp = directives.join('; ');
 
 	response.headers.set(CSP_HEADER, csp);
 	return response;
