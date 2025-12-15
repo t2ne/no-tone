@@ -216,8 +216,6 @@ hr {
 .topbar__toggleIcon {
   font-size: 22px;
 }
-.topbar__spacer {
-}
 .topbar__nav--home {
   display: flex;
   align-items: center;

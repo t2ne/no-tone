@@ -9,6 +9,7 @@ interface Props {
 
 const { title, description, image = "/b.png" } = Astro.props as Props;
 const jbMonoFontUrl = import.meta.env.PUBLIC_JB_MONO_FONT_URL;
+const fontOrigin = jbMonoFontUrl ? new URL(jbMonoFontUrl).origin : null;
 
 const cspNonce = Astro.locals.cspNonce;
 
@@ -25,6 +26,13 @@ const canonicalURL = Astro.site
 
 <!-- Preconnect to primary origin (covers HTML, API, assets) -->
 <link rel="preconnect" href={canonicalURL.origin} />
+
+<!-- Preconnect to Cloudflare Fonts origin -->
+{
+  fontOrigin && fontOrigin !== canonicalURL.origin && (
+    <link rel="preconnect" href={fontOrigin} crossorigin="anonymous" />
+  )
+}
 
 <!-- Cloudflare Fonts (JetBrains Mono Variable) -->
 {jbMonoFontUrl && <link rel="stylesheet" href={jbMonoFontUrl} />}

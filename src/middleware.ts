@@ -37,10 +37,14 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 		? "script-src 'self' 'unsafe-inline'"
 		: `script-src 'self' 'nonce-${nonce}'`;
 
+	const styleSrc = isLocalDev
+		? "style-src 'self' 'unsafe-inline' https:"
+		: "style-src 'self' https:";
+
 	const directives = [
 		"default-src 'self'",
 		scriptSrc,
-		"style-src 'self' https:",
+		styleSrc,
 		"img-src 'self' https: data:",
 		"font-src 'self' https: data:",
 		"connect-src 'self' https://api.github.com",
