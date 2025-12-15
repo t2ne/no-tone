@@ -34,7 +34,7 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 	const isLocalDev = url.hostname === 'localhost' || url.hostname === '127.0.0.1';
 
 	const scriptSrc = isLocalDev
-		? `script-src 'self' 'nonce-${nonce}' 'unsafe-inline'`
+		? "script-src 'self' 'unsafe-inline'"
 		: `script-src 'self' 'nonce-${nonce}'`;
 
 	const csp = [
