@@ -169,6 +169,9 @@ const cspNonce = Astro.locals.cspNonce;
 
         const initialEnv = getEnvironment();
         icons.forEach((el) => applyPosition(el, initialEnv));
+        if (desktop instanceof HTMLElement) {
+          desktop.classList.add("desktop--ready");
+        }
 
         const select = (target) => {
           icons.forEach((el) => {
@@ -302,6 +305,12 @@ const cspNonce = Astro.locals.cspNonce;
         position: relative;
         min-height: 100vh;
         overflow: hidden;
+      }
+      .desktop .icon {
+        opacity: 0;
+      }
+      .desktop.desktop--ready .icon {
+        opacity: 1;
       }
       .icon {
         position: absolute;
