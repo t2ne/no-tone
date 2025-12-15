@@ -159,3 +159,283 @@ hr {
   /* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
   white-space: nowrap;
 }
+
+/* Topbar (Header) */
+.topbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  padding: 24px 28px;
+  pointer-events: none;
+  background: var(--bg);
+}
+.topbar--home {
+  background: transparent;
+}
+.topbar__nav {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  margin: 0 auto;
+  font-size: 16px;
+  letter-spacing: 0.02em;
+  pointer-events: auto;
+}
+.topbar__back {
+  border: none;
+  background: transparent;
+  color: var(--chrome-fg);
+  font: inherit;
+  padding: 4px 6px;
+  cursor: pointer;
+  text-align: left;
+  justify-self: start;
+  width: auto;
+}
+.topbar__back[hidden] {
+  display: none;
+}
+.topbar__back:hover {
+  text-decoration: underline;
+}
+.topbar__toggle {
+  border: none;
+  background: transparent;
+  color: var(--chrome-fg);
+  font: inherit;
+  padding: 4px 10px;
+  cursor: pointer;
+}
+.topbar__toggle:hover {
+  text-decoration: underline;
+}
+.topbar__toggleIcon {
+  font-size: 22px;
+}
+.topbar__spacer {
+}
+.topbar__nav--home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Bottombar (Footer) */
+.bottombar {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 50;
+  padding: 24px 28px 32px 28px;
+  display: flex;
+  justify-content: center;
+  pointer-events: none;
+  background: var(--bg);
+}
+.bottombar__nav {
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  pointer-events: auto;
+}
+.bottombar__link {
+  color: var(--chrome-fg);
+  text-decoration: none;
+  background: transparent;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+}
+.bottombar__link:hover {
+  text-decoration: underline;
+}
+.bottombar__sep {
+  margin: 0 8px;
+  color: var(--chrome-fg);
+}
+.bottombar--home {
+  background: transparent;
+}
+
+/* Header links */
+.headerLink {
+  display: inline-block;
+  text-decoration: none;
+}
+.headerLink.active {
+  font-weight: bolder;
+  text-decoration: underline;
+}
+
+/* Desktop (home) */
+.desktop {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+.desktop .icon {
+  opacity: 0;
+}
+.desktop.desktop--ready .icon {
+  opacity: 1;
+}
+.icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--fg);
+  user-select: none;
+  touch-action: none;
+  will-change: transform;
+  transition: none;
+  cursor: grab;
+}
+.icon.is-dragging {
+  cursor: grabbing;
+}
+.icon__glyph {
+  display: block;
+  width: 72px;
+  height: 54px;
+}
+.icon__label {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  margin-top: 2px;
+  color: var(--desktop-label);
+}
+.icon.is-selected::before {
+  content: "";
+  position: absolute;
+  inset: -6px -6px;
+  border: 2px dotted var(--selection-border);
+  border-radius: 2px;
+  pointer-events: none;
+}
+.icon__glyph img {
+  display: block;
+  margin: 0 auto;
+}
+
+/* Generic page layout */
+.page {
+  min-height: 100vh;
+  padding: 90px 28px 84px 28px;
+}
+.page__title {
+  font-size: 16px;
+  font-weight: 400;
+  margin: 0 0 18px 0;
+  color: var(--desktop-label);
+}
+
+/* Empty page */
+.page__figure {
+  margin: 8px 0 0 0;
+  max-width: 320px;
+}
+.page__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+@media (max-width: 600px) {
+  .page__figure {
+    max-width: 190px;
+  }
+}
+
+/* Thoughts page */
+.note {
+  min-height: 100vh;
+  padding: 90px 28px 84px 28px;
+}
+.note__date {
+  font-size: 12px;
+  letter-spacing: 0.02em;
+  text-transform: lowercase;
+  margin-bottom: 20px;
+  color: var(--chrome-fg);
+}
+.note__content {
+  max-width: 820px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--desktop-label);
+}
+.note__content p {
+  margin: 0 0 18px 0;
+}
+
+/* usr/ page tree */
+.tree {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+}
+.tree__item {
+  position: relative;
+  margin: 4px 0;
+  list-style: none;
+}
+.tree__label {
+  border: 0;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  color: var(--desktop-label);
+  font: inherit;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-align: left;
+  appearance: none;
+  -webkit-appearance: none;
+}
+.tree__label:hover {
+  text-decoration: underline;
+}
+.tree__chevron {
+  display: inline-block;
+  width: 1ch;
+  margin-right: 6px;
+}
+.tree__name {
+  letter-spacing: 0.02em;
+}
+.tree__children {
+  list-style: none;
+  margin: 0;
+  padding: 0 0 0 20px;
+  border-left: 1px solid var(--border);
+}
+.tree__children .tree__item::before {
+  content: "";
+  position: absolute;
+  left: -20px;
+  width: 20px;
+  top: 0.9em;
+  border-bottom: 1px solid var(--border);
+}
+.tree__item--file a,
+.tree__item--file {
+  color: var(--desktop-label);
+  font-size: 13px;
+  text-decoration: none;
+}
+.tree__item--file a:hover {
+  text-decoration: underline;
+}

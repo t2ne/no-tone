@@ -40,7 +40,7 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 	const directives = [
 		"default-src 'self'",
 		scriptSrc,
-		"style-src 'self' 'unsafe-inline' https:",
+		"style-src 'self' https:",
 		"img-src 'self' https: data:",
 		"font-src 'self' https: data:",
 		"connect-src 'self' https://api.github.com",
