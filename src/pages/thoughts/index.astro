@@ -1,119 +1,119 @@
 ---
-import BaseHead from '../../components/BaseHead.astro';
-import Header from '../../components/Header.astro';
-import Footer from '../../components/Footer.astro';
+import BaseHead from "../../components/BaseHead.astro";
+import Header from "../../components/Header.astro";
+import Footer from "../../components/Footer.astro";
 
-const title = 'thoughts';
+const title = "thoughts";
+
+const cspNonce = Astro.locals.cspNonce;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={title} description={title} image="/b.png" />
-	</head>
-	<body>
-		<Header />
-		<main class="note">
-			<div class="note__date">december 12 2025</div>
-			<div class="note__content">
-				<p>
-					I spend most of my days with fleeting thoughts. Writing.
-					<br />
-					Listening. And collecting old Beach cruisers. The
-					<br />
-					morning rides keep me on a hill of silence.
-				</p>
-				<p>I go months without a phone.</p>
-				<p>
-					Love, loss, and grief have disturbed my comfort zone,
-					<br />
-					but the glimmers of God speak through my music
-					<br />
-					and family.
-				</p>
-				<p>
-					While the world around me evolves, I reflect on what
-					<br />
-					matters the most. The life in which my words will
-					<br />
-					land next.
-				</p>
-				<p>
-					There’s beauty in completion. And always faith in
-					<br />
-					the unknown.
-				</p>
-				<p>
-					Thank you for keeping me in your thoughts. I’ve prayed
-					<br />
-					for you all.
-				</p>
-				<p>
-					See you soon.
-				</p>
-			</div>
-		</main>
-		<Footer />
+  <head>
+    <BaseHead title={title} description={title} image="/b.png" />
+  </head>
+  <body>
+    <Header />
+    <main class="note">
+      <div class="note__date">december 12 2025</div>
+      <div class="note__content">
+        <p>
+          I spend most of my days with fleeting thoughts. Writing.
+          <br />
+          Listening. And collecting old Beach cruisers. The
+          <br />
+          morning rides keep me on a hill of silence.
+        </p>
+        <p>I go months without a phone.</p>
+        <p>
+          Love, loss, and grief have disturbed my comfort zone,
+          <br />
+          but the glimmers of God speak through my music
+          <br />
+          and family.
+        </p>
+        <p>
+          While the world around me evolves, I reflect on what
+          <br />
+          matters the most. The life in which my words will
+          <br />
+          land next.
+        </p>
+        <p>
+          There’s beauty in completion. And always faith in
+          <br />
+          the unknown.
+        </p>
+        <p>
+          Thank you for keeping me in your thoughts. I’ve prayed
+          <br />
+          for you all.
+        </p>
+        <p>See you soon.</p>
+      </div>
+    </main>
+    <Footer />
 
-		<script is:inline>
-			(() => {
-				const el = document.querySelector('.note__date');
-				if (!el) return;
+    <script is:inline nonce={cspNonce}>
+      (() => {
+        const el = document.querySelector(".note__date");
+        if (!el) return;
 
-				const months = [
-					'january',
-					'february',
-					'march',
-					'april',
-					'may',
-					'june',
-					'july',
-					'august',
-					'september',
-					'october',
-					'november',
-					'december',
-				];
+        const months = [
+          "january",
+          "february",
+          "march",
+          "april",
+          "may",
+          "june",
+          "july",
+          "august",
+          "september",
+          "october",
+          "november",
+          "december",
+        ];
 
-				const pad = (n) => String(n).padStart(2, '0');
+        const pad = (n) => String(n).padStart(2, "0");
 
-				const tick = () => {
-					const now = new Date();
-					const month = months[now.getMonth()];
-					const day = now.getDate();
-					const year = now.getFullYear();
-					const h = pad(now.getHours());
-					const m = pad(now.getMinutes());
-					const s = pad(now.getSeconds());
-					el.textContent = `${month} ${day} ${year} ${h}:${m}:${s}`;
-				};
+        const tick = () => {
+          const now = new Date();
+          const month = months[now.getMonth()];
+          const day = now.getDate();
+          const year = now.getFullYear();
+          const h = pad(now.getHours());
+          const m = pad(now.getMinutes());
+          const s = pad(now.getSeconds());
+          el.textContent = `${month} ${day} ${year} ${h}:${m}:${s}`;
+        };
 
-				tick();
-				setInterval(tick, 1000);
-			})();
-		</script>
+        tick();
+        setInterval(tick, 1000);
+      })();
+    </script>
 
-		<style>
-			.note {
-				min-height: 100vh;
-				padding: 90px 28px 84px 28px;
-			}
-			.note__date {
-				font-size: 12px;
-				letter-spacing: 0.02em;
-				text-transform: lowercase;
-				margin-bottom: 20px;
-				color: var(--chrome-fg);
-			}
-			.note__content {
-				max-width: 820px;
-				font-size: 16px;
-				line-height: 1.6;
-				color: var(--desktop-label);
-			}
-			.note__content p {
-				margin: 0 0 18px 0;
-			}
-		</style>
-	</body>
+    <style>
+      .note {
+        min-height: 100vh;
+        padding: 90px 28px 84px 28px;
+      }
+      .note__date {
+        font-size: 12px;
+        letter-spacing: 0.02em;
+        text-transform: lowercase;
+        margin-bottom: 20px;
+        color: var(--chrome-fg);
+      }
+      .note__content {
+        max-width: 820px;
+        font-size: 16px;
+        line-height: 1.6;
+        color: var(--desktop-label);
+      }
+      .note__content p {
+        margin: 0 0 18px 0;
+      }
+    </style>
+  </body>
 </html>

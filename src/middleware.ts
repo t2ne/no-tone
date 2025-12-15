@@ -1,0 +1,49 @@
+import type { MiddlewareHandler } from 'astro';
+
+const CSP_HEADER = 'Content-Security-Policy';
+
+const generateNonce = (): string => {
+	// Use Web Crypto when available (Cloudflare Workers, modern browsers)
+	if (typeof crypto !== 'undefined' && 'getRandomValues' in crypto) {
+		const bytes = new Uint8Array(16);
+		crypto.getRandomValues(bytes);
+		let binary = '';
+		for (let i = 0; i < bytes.length; i++) {
+			binary += String.fromCharCode(bytes[i]);
+		}
+		return btoa(binary);
+	}
+
+	// Fallback for non-Web Crypto environments (e.g. some local dev setups)
+	return Math.random().toString(36).slice(2) + Math.random().toString(36).slice(2);
+};
+
+export const onRequest: MiddlewareHandler = async (context, next) => {
+	const nonce = generateNonce();
+	context.locals.cspNonce = nonce;
+
+	const response = await next();
+
+	// Optionally prevent caching of HTML responses that contain nonces
+	const contentType = response.headers.get('Content-Type') || '';
+	if (contentType.startsWith('text/html')) {
+		response.headers.set('Cache-Control', 'private, no-store');
+	}
+
+	const csp = [
+		"default-src 'self'",
+		`script-src 'self' 'nonce-${nonce}'`,
+		"style-src 'self' 'unsafe-inline' https:",
+		"img-src 'self' https: data:",
+		"font-src 'self' https: data:",
+		"connect-src 'self' https://api.github.com",
+		"frame-ancestors 'none'",
+		"base-uri 'none'",
+		"object-src 'none'",
+		"trusted-types default",
+		"require-trusted-types-for 'script'",
+	].join('; ');
+
+	response.headers.set(CSP_HEADER, csp);
+	return response;
+};

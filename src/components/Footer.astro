@@ -1,90 +1,99 @@
 ---
 const pathname = Astro.url.pathname;
-const isTransparent = pathname === '/' || pathname.startsWith('/usr');
+const isTransparent = pathname === "/" || pathname.startsWith("/usr");
+
+const cspNonce = Astro.locals.cspNonce;
 ---
 
-<footer class={`bottombar${isTransparent ? ' bottombar--home' : ''}`}>
-	<nav class="bottombar__nav" aria-label="Social">
-		<a class="bottombar__link" href="https://github.com/t2ne" target="_blank" rel="noreferrer">github</a>
-		<span class="bottombar__sep" aria-hidden="true">/</span>
-		<button class="bottombar__link bottombar__contact" type="button">contact</button>
-	</nav>
+<footer class={`bottombar${isTransparent ? " bottombar--home" : ""}`}>
+  <nav class="bottombar__nav" aria-label="Social">
+    <a
+      class="bottombar__link"
+      href="https://github.com/t2ne"
+      target="_blank"
+      rel="noreferrer">github</a
+    >
+    <span class="bottombar__sep" aria-hidden="true">/</span>
+    <button class="bottombar__link bottombar__contact" type="button"
+      >contact</button
+    >
+  </nav>
 </footer>
 
-<script is:inline>
-	(() => {
-		const button = document.querySelector('.bottombar__contact');
-		if (!button) return;
+<script is:inline nonce={cspNonce}>
+  (() => {
+    const button = document.querySelector(".bottombar__contact");
+    if (!button) return;
 
-		const EMAIL = 'msg@no-tone.com';
-		let resetTimeout;
+    const EMAIL = "msg@no-tone.com";
+    let resetTimeout;
 
-		const setLabel = (text) => {
-			button.textContent = text;
-		};
+    const setLabel = (text) => {
+      button.textContent = text;
+    };
 
-		setLabel('contact');
+    setLabel("contact");
 
-		button.addEventListener('click', async () => {
-			clearTimeout(resetTimeout);
-			try {
-				if (navigator.clipboard?.writeText) {
-					await navigator.clipboard.writeText(EMAIL);
-				} else {
-					const area = document.createElement('textarea');
-					area.value = EMAIL;
-					area.style.position = 'fixed';
-					area.style.opacity = '0';
-					document.body.appendChild(area);
-					area.select();
-					document.execCommand('copy');
-					document.body.removeChild(area);
-				}
-				setLabel('copied');
-			} catch {
-				setLabel('copy failed');
-			}
-			resetTimeout = setTimeout(() => setLabel('contact'), 1500);
-		});
-	})();
+    button.addEventListener("click", async () => {
+      clearTimeout(resetTimeout);
+      try {
+        if (navigator.clipboard?.writeText) {
+          await navigator.clipboard.writeText(EMAIL);
+        } else {
+          const area = document.createElement("textarea");
+          area.value = EMAIL;
+          area.style.position = "fixed";
+          area.style.opacity = "0";
+          document.body.appendChild(area);
+          area.select();
+          document.execCommand("copy");
+          document.body.removeChild(area);
+        }
+        setLabel("copied");
+      } catch {
+        setLabel("copy failed");
+      }
+      resetTimeout = setTimeout(() => setLabel("contact"), 1500);
+    });
+  })();
 </script>
 
 <style>
-	.bottombar {
-		position: fixed;
-		left: 0;
-		right: 0;
-		bottom: 0;
-		z-index: 50;
-		padding: 24px 28px 32px 28px;
-		display: flex;
-		justify-content: center;
-		pointer-events: none;
-		background: var(--bg);
-	}
-	.bottombar__nav {
-		font-size: 14px;
-		letter-spacing: 0.02em;
-		text-transform: lowercase;
-		pointer-events: auto;
-	}
-	.bottombar__link {
-		color: var(--chrome-fg);
-		text-decoration: none;
-		background: transparent;
-		border: none;
-		padding: 0;
-		font: inherit;
-		cursor: pointer;
-	}
-	.bottombar__link:hover {
-		text-decoration: underline;
-	}
-	.bottombar__sep {
-		margin: 0 8px;
-		color: var(--chrome-fg);
-	}
-	.bottombar--home {
-		background: transparent;
-	}
+  .bottombar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    padding: 24px 28px 32px 28px;
+    display: flex;
+    justify-content: center;
+    pointer-events: none;
+    background: var(--bg);
+  }
+  .bottombar__nav {
+    font-size: 14px;
+    letter-spacing: 0.02em;
+    text-transform: lowercase;
+    pointer-events: auto;
+  }
+  .bottombar__link {
+    color: var(--chrome-fg);
+    text-decoration: none;
+    background: transparent;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+  }
+  .bottombar__link:hover {
+    text-decoration: underline;
+  }
+  .bottombar__sep {
+    margin: 0 8px;
+    color: var(--chrome-fg);
+  }
+  .bottombar--home {
+    background: transparent;
+  }
 </style>

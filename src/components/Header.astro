@@ -1,160 +1,171 @@
 ---
-const isHome = Astro.url.pathname === '/';
+const isHome = Astro.url.pathname === "/";
+const cspNonce = Astro.locals.cspNonce;
 ---
 
-<header class={`topbar${isHome ? ' topbar--home' : ''}`}>
-	<nav class={`topbar__nav${isHome ? ' topbar__nav--home' : ''}`} aria-label="Primary">
-		<button
-			class="topbar__back"
-			type="button"
-			aria-label="Go back"
-			hidden={isHome}
-		>
-			<span aria-hidden="true">←</span>
-		</button>
-		<button class="topbar__toggle" type="button" aria-label="Toggle theme" title="Toggle theme">
-			<span class="topbar__toggleIcon" aria-hidden="true">☀︎</span>
-		</button>
-		<span class="topbar__spacer" aria-hidden="true"></span>
-	</nav>
+<header class={`topbar${isHome ? " topbar--home" : ""}`}>
+  <nav
+    class={`topbar__nav${isHome ? " topbar__nav--home" : ""}`}
+    aria-label="Primary"
+  >
+    <button
+      class="topbar__back"
+      type="button"
+      aria-label="Go back"
+      hidden={isHome}
+    >
+      <span aria-hidden="true">←</span>
+    </button>
+    <button
+      class="topbar__toggle"
+      type="button"
+      aria-label="Toggle theme"
+      title="Toggle theme"
+    >
+      <span class="topbar__toggleIcon" aria-hidden="true">☀︎</span>
+    </button>
+    <span class="topbar__spacer" aria-hidden="true"></span>
+  </nav>
 </header>
 
-<script is:inline>
-	(() => {
-		const STORAGE_KEY = 'theme';
+<script is:inline nonce={cspNonce}>
+  (() => {
+    const STORAGE_KEY = "theme";
 
-		const toggle = document.querySelector('.topbar__toggle');
-		const icon = document.querySelector('.topbar__toggleIcon');
-		const back = document.querySelector('.topbar__back');
-		if (!toggle || !icon) return;
+    const toggle = document.querySelector(".topbar__toggle");
+    const icon = document.querySelector(".topbar__toggleIcon");
+    const back = document.querySelector(".topbar__back");
+    if (!toggle || !icon) return;
 
-		const apply = (theme) => {
-			document.documentElement.dataset.theme = theme;
-			icon.textContent = theme === 'dark' ? '☾' : '☀︎';
-		};
+    const apply = (theme) => {
+      document.documentElement.dataset.theme = theme;
+      icon.textContent = theme === "dark" ? "☾" : "☀︎";
+    };
 
-		const getStoredTheme = () => {
-			try {
-				const value = localStorage.getItem(STORAGE_KEY);
-				return value === 'light' || value === 'dark' ? value : null;
-			} catch {
-				return null;
-			}
-		};
+    const getStoredTheme = () => {
+      try {
+        const value = localStorage.getItem(STORAGE_KEY);
+        return value === "light" || value === "dark" ? value : null;
+      } catch {
+        return null;
+      }
+    };
 
-		const setStoredTheme = (theme) => {
-			try {
-				localStorage.setItem(STORAGE_KEY, theme);
-			} catch {
-				// no-op
-			}
-		};
+    const setStoredTheme = (theme) => {
+      try {
+        localStorage.setItem(STORAGE_KEY, theme);
+      } catch {
+        // no-op
+      }
+    };
 
-		const syncFromStorage = () => {
-			const stored = getStoredTheme();
-			const fallback = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-			const theme = stored ?? fallback ?? 'light';
-			apply(theme);
-			if (!stored) {
-				setStoredTheme(theme);
-			}
-		};
+    const syncFromStorage = () => {
+      const stored = getStoredTheme();
+      const fallback =
+        document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+      const theme = stored ?? fallback ?? "light";
+      apply(theme);
+      if (!stored) {
+        setStoredTheme(theme);
+      }
+    };
 
-		// Initial sync with localStorage (or light by default)
-		syncFromStorage();
+    // Initial sync with localStorage (or light by default)
+    syncFromStorage();
 
-		// Keep theme in sync when navigating with the browser back/forward buttons
-		window.addEventListener('pageshow', () => {
-			syncFromStorage();
-		});
+    // Keep theme in sync when navigating with the browser back/forward buttons
+    window.addEventListener("pageshow", () => {
+      syncFromStorage();
+    });
 
-		// Sync across tabs/windows if theme changes elsewhere
-		window.addEventListener('storage', (event) => {
-			if (event.key === STORAGE_KEY) {
-				syncFromStorage();
-			}
-		});
+    // Sync across tabs/windows if theme changes elsewhere
+    window.addEventListener("storage", (event) => {
+      if (event.key === STORAGE_KEY) {
+        syncFromStorage();
+      }
+    });
 
-		toggle.addEventListener('click', () => {
-			const current = document.documentElement.dataset.theme === 'dark' ? 'dark' : 'light';
-			const next = current === 'dark' ? 'light' : 'dark';
-			apply(next);
-			setStoredTheme(next);
-		});
+    toggle.addEventListener("click", () => {
+      const current =
+        document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+      const next = current === "dark" ? "light" : "dark";
+      apply(next);
+      setStoredTheme(next);
+    });
 
-		if (back && !back.hidden) {
-			back.addEventListener('click', () => {
-				if (window.history.length > 1) {
-					window.history.back();
-				} else {
-					window.location.href = '/';
-				}
-			});
-		}
-	})();
+    if (back && !back.hidden) {
+      back.addEventListener("click", () => {
+        if (window.history.length > 1) {
+          window.history.back();
+        } else {
+          window.location.href = "/";
+        }
+      });
+    }
+  })();
 </script>
 <style>
-	.topbar {
-		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
-		z-index: 50;
-		padding: 24px 28px;
-		pointer-events: none;
-		background: var(--bg);
-	}
-	.topbar--home {
-		background: transparent;
-	}
-	.topbar__nav {
-		position: relative;
-		display: grid;
-		grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
-		align-items: center;
-		width: 100%;
-		margin: 0 auto;
-		font-size: 16px;
-		letter-spacing: 0.02em;
-		pointer-events: auto;
-	}
-	.topbar__back {
-		border: none;
-		background: transparent;
-		color: var(--chrome-fg);
-		font: inherit;
-		padding: 4px 6px;
-		cursor: pointer;
-		text-align: left;
-		justify-self: start;
-		width: auto;
-	}
-	.topbar__back[hidden] {
-		display: none;
-	}
-	.topbar__back:hover {
-		text-decoration: underline;
-	}
-	.topbar__toggle {
-		border: none;
-		background: transparent;
-		color: var(--chrome-fg);
-		font: inherit;
-		padding: 4px 10px;
-		cursor: pointer;
-	}
-	.topbar__toggle:hover {
-		text-decoration: underline;
-	}
-	.topbar__toggleIcon {
-		font-size: 22px;
-	}
-	.topbar__spacer {
-		/* right-side spacer to balance the grid */
-	}
-	.topbar__nav--home {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-	}
+  .topbar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    padding: 24px 28px;
+    pointer-events: none;
+    background: var(--bg);
+  }
+  .topbar--home {
+    background: transparent;
+  }
+  .topbar__nav {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    align-items: center;
+    width: 100%;
+    margin: 0 auto;
+    font-size: 16px;
+    letter-spacing: 0.02em;
+    pointer-events: auto;
+  }
+  .topbar__back {
+    border: none;
+    background: transparent;
+    color: var(--chrome-fg);
+    font: inherit;
+    padding: 4px 6px;
+    cursor: pointer;
+    text-align: left;
+    justify-self: start;
+    width: auto;
+  }
+  .topbar__back[hidden] {
+    display: none;
+  }
+  .topbar__back:hover {
+    text-decoration: underline;
+  }
+  .topbar__toggle {
+    border: none;
+    background: transparent;
+    color: var(--chrome-fg);
+    font: inherit;
+    padding: 4px 10px;
+    cursor: pointer;
+  }
+  .topbar__toggle:hover {
+    text-decoration: underline;
+  }
+  .topbar__toggleIcon {
+    font-size: 22px;
+  }
+  .topbar__spacer {
+    /* right-side spacer to balance the grid */
+  }
+  .topbar__nav--home {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 </style>

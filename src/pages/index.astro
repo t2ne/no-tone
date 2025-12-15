@@ -1,323 +1,350 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import BaseHead from "../components/BaseHead.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import { SITE_TITLE, SITE_DESCRIPTION } from "../consts";
+const cspNonce = Astro.locals.cspNonce;
 ---
 
 <!doctype html>
 <html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
-	</head>
-	<body>
-		<Header />
-		<main class="desktop" aria-label="Desktop">
-			<a class="icon" data-icon="folder-empty" href="/empty">
-				<span class="icon__glyph" aria-hidden="true">
-					<img src="/b.png" alt="empty" width="64" height="64" loading="eager" decoding="async" />
-				</span>
-				<span class="icon__label">empty</span>
-			</a>
+  <head>
+    <BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+  </head>
+  <body>
+    <Header />
+    <main class="desktop" aria-label="Desktop">
+      <a class="icon" data-icon="folder-empty" href="/empty">
+        <span class="icon__glyph" aria-hidden="true">
+          <img
+            src="/b.png"
+            alt="empty"
+            width="64"
+            height="64"
+            loading="eager"
+            decoding="async"
+          />
+        </span>
+        <span class="icon__label">empty</span>
+      </a>
 
-			<a class="icon" data-icon="folder-thoughts" href="/thoughts">
-				<span class="icon__glyph" aria-hidden="true">
-					<img src="/g.png" alt="thoughts" width="64" height="64" loading="eager" decoding="async" />
-				</span>
-				<span class="icon__label">thoughts</span>
-			</a>
+      <a class="icon" data-icon="folder-thoughts" href="/thoughts">
+        <span class="icon__glyph" aria-hidden="true">
+          <img
+            src="/g.png"
+            alt="thoughts"
+            width="64"
+            height="64"
+            loading="eager"
+            decoding="async"
+          />
+        </span>
+        <span class="icon__label">thoughts</span>
+      </a>
 
-			<a class="icon" data-icon="folder-usr" href="/usr">
-				<span class="icon__glyph" aria-hidden="true">
-					<img src="/usr.png" alt="usr" width="64" height="64" loading="eager" decoding="async" />
-				</span>
-				<span class="icon__label">usr</span>
-			</a>
-		</main>
-		<Footer />
+      <a class="icon" data-icon="folder-usr" href="/usr">
+        <span class="icon__glyph" aria-hidden="true">
+          <img
+            src="/usr.png"
+            alt="usr"
+            width="64"
+            height="64"
+            loading="eager"
+            decoding="async"
+          />
+        </span>
+        <span class="icon__label">usr</span>
+      </a>
+    </main>
+    <Footer />
 
-		<script is:inline>
-			(() => {
-				const STORAGE_KEY = 'desktop:iconPositions:v2';
+    <script is:inline nonce={cspNonce}>
+      (() => {
+        const STORAGE_KEY = "desktop:iconPositions:v2";
 
-				const icons = Array.from(document.querySelectorAll('.icon[data-icon]'));
-				if (!icons.length) return;
+        const icons = Array.from(document.querySelectorAll(".icon[data-icon]"));
+        if (!icons.length) return;
 
-				const load = () => {
-					try {
-						const raw = localStorage.getItem(STORAGE_KEY);
-						if (!raw) return {};
-						const data = JSON.parse(raw);
-						return typeof data === 'object' && data ? data : {};
-					} catch {
-						return {};
-					}
-				};
+        const load = () => {
+          try {
+            const raw = localStorage.getItem(STORAGE_KEY);
+            if (!raw) return {};
+            const data = JSON.parse(raw);
+            return typeof data === "object" && data ? data : {};
+          } catch {
+            return {};
+          }
+        };
 
-				const save = (positions) => {
-					try {
-						localStorage.setItem(STORAGE_KEY, JSON.stringify(positions));
-					} catch {
-						// no-op
-					}
-				};
+        const save = (positions) => {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(positions));
+          } catch {
+            // no-op
+          }
+        };
 
-				const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+        const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
-				const DEFAULTS = {
-					'folder-empty': { xRatio: 0.5, yRatio: 0.4 },
-					'folder-thoughts': { xRatio: 0.2, yRatio: 0.18 },
-				};
+        const DEFAULTS = {
+          "folder-empty": { xRatio: 0.5, yRatio: 0.4 },
+          "folder-thoughts": { xRatio: 0.2, yRatio: 0.18 },
+        };
 
-				const positions = { ...DEFAULTS, ...load() };
-				const desktop = document.querySelector('.desktop');
-				const TOP_GUARD = 16;
-				const SIDE_GUARD = 16;
+        const positions = { ...DEFAULTS, ...load() };
+        const desktop = document.querySelector(".desktop");
+        const TOP_GUARD = 16;
+        const SIDE_GUARD = 16;
 
-				const getEnvironment = () => {
-					const desktopRect = desktop?.getBoundingClientRect();
-					const width = desktopRect?.width ?? window.innerWidth;
-					const height = desktopRect?.height ?? window.innerHeight;
+        const getEnvironment = () => {
+          const desktopRect = desktop?.getBoundingClientRect();
+          const width = desktopRect?.width ?? window.innerWidth;
+          const height = desktopRect?.height ?? window.innerHeight;
 
-					const toDesktopRect = (rect) => {
-						if (!rect || !desktopRect) return null;
-						return {
-							left: rect.left - desktopRect.left,
-							top: rect.top - desktopRect.top,
-							right: rect.right - desktopRect.left,
-							bottom: rect.bottom - desktopRect.top,
-						};
-					};
+          const toDesktopRect = (rect) => {
+            if (!rect || !desktopRect) return null;
+            return {
+              left: rect.left - desktopRect.left,
+              top: rect.top - desktopRect.top,
+              right: rect.right - desktopRect.left,
+              bottom: rect.bottom - desktopRect.top,
+            };
+          };
 
-					const barriers = [];
-					const toggleEl = document.querySelector('.topbar__toggle');
-					const footerNavEl = document.querySelector('.bottombar__nav');
+          const barriers = [];
+          const toggleEl = document.querySelector(".topbar__toggle");
+          const footerNavEl = document.querySelector(".bottombar__nav");
 
-					if (toggleEl) {
-						const r = toDesktopRect(toggleEl.getBoundingClientRect());
-						if (r) {
-							barriers.push({
-								left: r.left - 12,
-								top: r.top - 12,
-								right: r.right + 12,
-								bottom: r.bottom + 12,
-							});
-						}
-					}
+          if (toggleEl) {
+            const r = toDesktopRect(toggleEl.getBoundingClientRect());
+            if (r) {
+              barriers.push({
+                left: r.left - 12,
+                top: r.top - 12,
+                right: r.right + 12,
+                bottom: r.bottom + 12,
+              });
+            }
+          }
 
-					if (footerNavEl) {
-						const r = toDesktopRect(footerNavEl.getBoundingClientRect());
-						if (r) {
-							barriers.push({
-								left: r.left - 16,
-								top: r.top - 16,
-								right: r.right + 16,
-								bottom: r.bottom + 16,
-							});
-						}
-					}
+          if (footerNavEl) {
+            const r = toDesktopRect(footerNavEl.getBoundingClientRect());
+            if (r) {
+              barriers.push({
+                left: r.left - 16,
+                top: r.top - 16,
+                right: r.right + 16,
+                bottom: r.bottom + 16,
+              });
+            }
+          }
 
-					return { width, height, barriers };
-				};
+          return { width, height, barriers };
+        };
 
-				const applyPosition = (el, env) => {
-					const id = el.getAttribute('data-icon');
-					if (!id) return;
-					const base = positions[id] ?? DEFAULTS[id] ?? { xRatio: 0.3, yRatio: 0.3 };
-					const width = env.width;
-					const height = env.height;
-					const iconWidth = el.offsetWidth;
-					const iconHeight = el.offsetHeight;
-					const maxX = Math.max(0, width - iconWidth - SIDE_GUARD);
-					const maxY = Math.max(0, height - iconHeight - SIDE_GUARD);
+        const applyPosition = (el, env) => {
+          const id = el.getAttribute("data-icon");
+          if (!id) return;
+          const base = positions[id] ??
+            DEFAULTS[id] ?? { xRatio: 0.3, yRatio: 0.3 };
+          const width = env.width;
+          const height = env.height;
+          const iconWidth = el.offsetWidth;
+          const iconHeight = el.offsetHeight;
+          const maxX = Math.max(0, width - iconWidth - SIDE_GUARD);
+          const maxY = Math.max(0, height - iconHeight - SIDE_GUARD);
 
-					let x = base.xRatio * width;
-					let y = base.yRatio * height;
+          let x = base.xRatio * width;
+          let y = base.yRatio * height;
 
-					x = clamp(x, SIDE_GUARD, maxX);
-					y = clamp(y, TOP_GUARD, maxY);
-					positions[id] = {
-						xRatio: width ? x / width : base.xRatio,
-						yRatio: height ? y / height : base.yRatio,
-					};
+          x = clamp(x, SIDE_GUARD, maxX);
+          y = clamp(y, TOP_GUARD, maxY);
+          positions[id] = {
+            xRatio: width ? x / width : base.xRatio,
+            yRatio: height ? y / height : base.yRatio,
+          };
 
-					el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-				};
+          el.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+        };
 
-				const initialEnv = getEnvironment();
-				icons.forEach((el) => applyPosition(el, initialEnv));
+        const initialEnv = getEnvironment();
+        icons.forEach((el) => applyPosition(el, initialEnv));
 
-				const select = (target) => {
-					icons.forEach((el) => {
-						el.classList.toggle('is-selected', target && el === target);
-					});
-				};
+        const select = (target) => {
+          icons.forEach((el) => {
+            el.classList.toggle("is-selected", target && el === target);
+          });
+        };
 
-				if (desktop) {
-					desktop.addEventListener('pointerdown', (event) => {
-						const target = event.target;
-						if (!(target instanceof Element)) return;
-						if (!target.closest('.icon')) {
-							select(null);
-						}
-					});
-				}
+        if (desktop) {
+          desktop.addEventListener("pointerdown", (event) => {
+            const target = event.target;
+            if (!(target instanceof Element)) return;
+            if (!target.closest(".icon")) {
+              select(null);
+            }
+          });
+        }
 
-				icons.forEach((el) => {
-					el.addEventListener('pointerdown', (event) => {
-						if (event.button !== 0) return;
-						const id = el.getAttribute('data-icon');
-						if (!id) return;
+        icons.forEach((el) => {
+          el.addEventListener("pointerdown", (event) => {
+            if (event.button !== 0) return;
+            const id = el.getAttribute("data-icon");
+            if (!id) return;
 
-						event.preventDefault();
+            event.preventDefault();
 
-						const env = getEnvironment();
-						const base = positions[id] ?? DEFAULTS[id] ?? { xRatio: 0.3, yRatio: 0.3 };
-						const start = {
-							x: base.xRatio * env.width,
-							y: base.yRatio * env.height,
-						};
-						const startX = event.clientX;
-						const startY = event.clientY;
-						let moved = false;
-						select(el);
+            const env = getEnvironment();
+            const base = positions[id] ??
+              DEFAULTS[id] ?? { xRatio: 0.3, yRatio: 0.3 };
+            const start = {
+              x: base.xRatio * env.width,
+              y: base.yRatio * env.height,
+            };
+            const startX = event.clientX;
+            const startY = event.clientY;
+            let moved = false;
+            select(el);
 
-						el.setPointerCapture(event.pointerId);
-						el.classList.add('is-dragging');
-						el.style.zIndex = '10';
+            el.setPointerCapture(event.pointerId);
+            el.classList.add("is-dragging");
+            el.style.zIndex = "10";
 
-						const onMove = (e) => {
-							e.preventDefault();
-							const dx = e.clientX - startX;
-							const dy = e.clientY - startY;
-							if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+            const onMove = (e) => {
+              e.preventDefault();
+              const dx = e.clientX - startX;
+              const dy = e.clientY - startY;
+              if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
 
-							const maxX = Math.max(0, env.width - el.offsetWidth - SIDE_GUARD);
-							const maxY = Math.max(0, env.height - el.offsetHeight - SIDE_GUARD);
+              const maxX = Math.max(0, env.width - el.offsetWidth - SIDE_GUARD);
+              const maxY = Math.max(
+                0,
+                env.height - el.offsetHeight - SIDE_GUARD
+              );
 
-							let nextX = clamp(start.x + dx, SIDE_GUARD, maxX);
-							let nextY = clamp(start.y + dy, TOP_GUARD, maxY);
+              let nextX = clamp(start.x + dx, SIDE_GUARD, maxX);
+              let nextY = clamp(start.y + dy, TOP_GUARD, maxY);
 
-							const iconRect = {
-								left: nextX,
-								top: nextY,
-								right: nextX + el.offsetWidth,
-								bottom: nextY + el.offsetHeight,
-							};
+              const iconRect = {
+                left: nextX,
+                top: nextY,
+                right: nextX + el.offsetWidth,
+                bottom: nextY + el.offsetHeight,
+              };
 
-							for (const barrier of env.barriers) {
-								const intersects = !(
-									iconRect.right < barrier.left ||
-									iconRect.left > barrier.right ||
-									iconRect.bottom < barrier.top ||
-									iconRect.top > barrier.bottom
-								);
+              for (const barrier of env.barriers) {
+                const intersects = !(
+                  iconRect.right < barrier.left ||
+                  iconRect.left > barrier.right ||
+                  iconRect.bottom < barrier.top ||
+                  iconRect.top > barrier.bottom
+                );
 
-								if (intersects) {
-									const iconCenterX = (iconRect.left + iconRect.right) / 2;
-									const barrierCenterX = (barrier.left + barrier.right) / 2;
-									if (iconCenterX <= barrierCenterX) {
-										nextX = barrier.left - el.offsetWidth - 8;
-									} else {
-										nextX = barrier.right + 8;
-									}
-								}
-							}
+                if (intersects) {
+                  const iconCenterX = (iconRect.left + iconRect.right) / 2;
+                  const barrierCenterX = (barrier.left + barrier.right) / 2;
+                  if (iconCenterX <= barrierCenterX) {
+                    nextX = barrier.left - el.offsetWidth - 8;
+                  } else {
+                    nextX = barrier.right + 8;
+                  }
+                }
+              }
 
-							nextX = clamp(nextX, SIDE_GUARD, maxX);
-							nextY = clamp(nextY, TOP_GUARD, maxY);
-							positions[id] = {
-								xRatio: env.width ? nextX / env.width : 0,
-								yRatio: env.height ? nextY / env.height : 0,
-							};
-							el.style.transform = `translate3d(${nextX}px, ${nextY}px, 0)`;
-						};
+              nextX = clamp(nextX, SIDE_GUARD, maxX);
+              nextY = clamp(nextY, TOP_GUARD, maxY);
+              positions[id] = {
+                xRatio: env.width ? nextX / env.width : 0,
+                yRatio: env.height ? nextY / env.height : 0,
+              };
+              el.style.transform = `translate3d(${nextX}px, ${nextY}px, 0)`;
+            };
 
-						const onUp = () => {
-							el.classList.remove('is-dragging');
-							el.style.zIndex = '';
-							save(positions);
-							window.removeEventListener('pointermove', onMove);
-							window.removeEventListener('pointerup', onUp);
+            const onUp = () => {
+              el.classList.remove("is-dragging");
+              el.style.zIndex = "";
+              save(positions);
+              window.removeEventListener("pointermove", onMove);
+              window.removeEventListener("pointerup", onUp);
 
-							// Prevent accidental navigation after drag
-							if (moved) {
-								const href = el.getAttribute('href');
-								el.addEventListener(
-									'click',
-									(e) => {
-										if (href) e.preventDefault();
-									},
-									{ once: true }
-								);
-							}
-						};
+              // Prevent accidental navigation after drag
+              if (moved) {
+                const href = el.getAttribute("href");
+                el.addEventListener(
+                  "click",
+                  (e) => {
+                    if (href) e.preventDefault();
+                  },
+                  { once: true }
+                );
+              }
+            };
 
-						window.addEventListener('pointermove', onMove);
-						window.addEventListener('pointerup', onUp, { once: true });
-					});
+            window.addEventListener("pointermove", onMove);
+            window.addEventListener("pointerup", onUp, { once: true });
+          });
 
-					el.addEventListener('click', () => {
-						select(el);
-					});
-				});
+          el.addEventListener("click", () => {
+            select(el);
+          });
+        });
 
-				window.addEventListener('resize', () => {
-					const env = getEnvironment();
-					icons.forEach((el) => applyPosition(el, env));
-					save(positions);
-				});
-			})();
-		</script>
+        window.addEventListener("resize", () => {
+          const env = getEnvironment();
+          icons.forEach((el) => applyPosition(el, env));
+          save(positions);
+        });
+      })();
+    </script>
 
-		<style>
-			.desktop {
-				position: relative;
-				min-height: 100vh;
-				overflow: hidden;
-			}
-			.icon {
-				position: absolute;
-				left: 0;
-				top: 0;
-				display: grid;
-				justify-items: center;
-				gap: 10px;
-				text-decoration: none;
-				color: var(--fg);
-				user-select: none;
-				touch-action: none;
-				will-change: transform;
-				transition: none;
-				cursor: grab;
-			}
-			.icon.is-dragging {
-				cursor: grabbing;
-			}
-			.icon__glyph {
-				display: block;
-				width: 72px;
-				height: 54px;
-			}
-			.icon__label {
-				font-size: 12px;
-				letter-spacing: 0.02em;
-				text-transform: lowercase;
-				margin-top: 2px;
-				color: var(--desktop-label);
-			}
-			.icon.is-selected::before {
-				content: '';
-				position: absolute;
-				inset: -6px -6px;
-				border: 2px dotted var(--selection-border);
-				border-radius: 2px;
-				pointer-events: none;
-			}
-			.icon__glyph img {
-				display: block;
-				margin: 0 auto;
-			}
-		</style>
-	</body>
+    <style>
+      .desktop {
+        position: relative;
+        min-height: 100vh;
+        overflow: hidden;
+      }
+      .icon {
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: grid;
+        justify-items: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--fg);
+        user-select: none;
+        touch-action: none;
+        will-change: transform;
+        transition: none;
+        cursor: grab;
+      }
+      .icon.is-dragging {
+        cursor: grabbing;
+      }
+      .icon__glyph {
+        display: block;
+        width: 72px;
+        height: 54px;
+      }
+      .icon__label {
+        font-size: 12px;
+        letter-spacing: 0.02em;
+        text-transform: lowercase;
+        margin-top: 2px;
+        color: var(--desktop-label);
+      }
+      .icon.is-selected::before {
+        content: "";
+        position: absolute;
+        inset: -6px -6px;
+        border: 2px dotted var(--selection-border);
+        border-radius: 2px;
+        pointer-events: none;
+      }
+      .icon__glyph img {
+        display: block;
+        margin: 0 auto;
+      }
+    </style>
+  </body>
 </html>
