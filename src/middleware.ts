@@ -35,7 +35,7 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 
 	const scriptSrc = isLocalDev
 		? "script-src 'self' 'unsafe-inline'"
-		: `script-src 'self' 'nonce-${nonce}' 'unsafe-inline'`;
+		: `script-src 'self' 'nonce-${nonce}'`;
 
 	const directives = [
 		"default-src 'self'",
