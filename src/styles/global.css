@@ -327,7 +327,8 @@ hr {
 }
 
 /* Generic page layout */
-.page {
+.page,
+.note {
   min-height: 100vh;
   padding: 90px 28px 84px 28px;
 }
@@ -356,10 +357,6 @@ hr {
 }
 
 /* Thoughts page */
-.note {
-  min-height: 100vh;
-  padding: 90px 28px 84px 28px;
-}
 .note__date {
   font-size: 12px;
   letter-spacing: 0.02em;

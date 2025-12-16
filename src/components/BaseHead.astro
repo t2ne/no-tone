@@ -1,5 +1,5 @@
 ---
-import "../styles/global.css";
+import globalCssUrl from "../styles/global.css?url";
 
 interface Props {
   title: string;
@@ -23,6 +23,8 @@ const canonicalURL = Astro.site
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/png" sizes="32x32" href="/usr.png" />
 <meta name="generator" content={Astro.generator} />
+<link rel="preload" as="style" href={globalCssUrl} />
+<link rel="stylesheet" href={globalCssUrl} />
 
 <!-- Preconnect to primary origin (covers HTML, API, assets) -->
 <link rel="preconnect" href={canonicalURL.origin} />
