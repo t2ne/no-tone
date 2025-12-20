@@ -4,29 +4,37 @@ const GITHUB_API_URL = 'https://api.github.com/users/t2ne/repos?per_page=100&sor
 const EDGE_TTL_SECONDS = 900; // 15 minutes at the edge
 const BROWSER_TTL_SECONDS = 300; // 5 minutes in the browser
 
+
 interface GithubRepo {
 	name?: string;
 	html_url?: string;
 	language?: string | null;
+	description?: string | null;
+	topics?: string[];
 	[other: string]: unknown;
 }
+
 
 interface SimplifiedRepo {
 	name: string;
 	url: string;
 	language: string;
+	description: string;
+	topics: string[];
 }
 
 const simplifyRepos = (repos: unknown): SimplifiedRepo[] => {
-	if (!Array.isArray(repos)) return [];
+if (!Array.isArray(repos)) return [];
 	return repos
 		.filter((repo): repo is GithubRepo => !!repo && typeof repo === 'object')
 		.filter((repo) => repo.name && repo.html_url)
-		.map((repo) => ({
+	    .map((repo) => ({
 			name: String(repo.name),
-			url: String(repo.html_url),
-			language: repo.language ? String(repo.language) : 'Other',
-		}));
+		    url: String(repo.html_url),
+		    language: repo.language ? String(repo.language) : 'Other',
+		    description: repo.description ? String(repo.description) : '',
+		    topics: Array.isArray(repo.topics) ? repo.topics : [],
+	    }));
 };
 
 const buildHeaders = (origin: string | null) => {
@@ -79,6 +87,7 @@ export async function GET(context: APIContext): Promise<Response> {
 		headers: {
 			// GitHub requires a User-Agent
 			'User-Agent': 'no-tone-site',
+			'Accept': 'application/vnd.github.mercy-preview+json', // Needed for topics
 		},
 	});
 
