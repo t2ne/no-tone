@@ -35,7 +35,7 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 
 	const scriptSrc = isLocalDev
 		? "script-src 'self' 'unsafe-inline'"
-		: `script-src 'self' 'nonce-${nonce}' https://static.cloudflareinsights.com`;
+		: `script-src 'self' 'nonce-${nonce}'`;
 
 	const styleSrc = isLocalDev
 		? "style-src 'self' 'unsafe-inline'"
@@ -47,7 +47,7 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 		styleSrc,
 		"img-src 'self' https: data:",
 		"font-src 'self' https: data:",
-		"connect-src 'self' https://api.github.com",
+		"connect-src 'self' https://api.github.com https://static.cloudflareinsights.com",
 		"frame-ancestors 'none'",
 		"base-uri 'none'",
 		"form-action 'self'",
