@@ -47,7 +47,7 @@ export const onRequest: MiddlewareHandler = async (context, next) => {
 		styleSrc,
 		"img-src 'self' https: data:",
 		"font-src 'self' https: data:",
-		"connect-src 'self' https://api.github.com https://static.cloudflareinsights.com",
+		"connect-src 'self' https://api.github.com",
 		"frame-ancestors 'none'",
 		"base-uri 'none'",
 		"form-action 'self'",
