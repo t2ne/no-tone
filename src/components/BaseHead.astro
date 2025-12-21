@@ -64,6 +64,9 @@ const isUsrPage = Astro.url.pathname === "/usr";
 <!-- Canonical URL -->
 <link rel="canonical" href={canonicalURL} />
 
+<!-- RSS Feed Discovery -->
+<link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml" />
+
 <!-- Primary Meta Tags -->
 <title>{title}</title>
 <meta name="title" content={title} />
@@ -82,3 +85,14 @@ const isUsrPage = Astro.url.pathname === "/usr";
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<!-- Cloudflare Web Analytics (prod only) -->
+{
+  import.meta.env.PROD && (
+    <script
+      defer
+      src="https://static.cloudflareinsights.com/beacon.min.js"
+      data-cf-beacon='{"token": "7c02d4e4140846bdae1494cf2f7149b3"}'
+    />
+  )
+}
