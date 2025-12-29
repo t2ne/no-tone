@@ -490,8 +490,32 @@ hr {
   word-break: break-word;
 }
 
+.tree__item--file.job-description,
+.tree__item--file.job-bullet {
+  max-width: 520px;
+  white-space: normal;
+  word-break: break-word;
+}
+
+.tree__item--file.edu-title,
+.tree__item--file.edu-bullet {
+  max-width: 520px;
+  white-space: normal;
+  word-break: break-word;
+}
+
 @media (max-width: 600px) {
   .tree__item--file.repo-description {
+    max-width: 100%;
+  }
+
+  .tree__item--file.job-description,
+  .tree__item--file.job-bullet {
+    max-width: 100%;
+  }
+
+  .tree__item--file.edu-title,
+  .tree__item--file.edu-bullet {
     max-width: 100%;
   }
 }
