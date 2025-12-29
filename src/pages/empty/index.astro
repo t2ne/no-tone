@@ -22,17 +22,29 @@ const cspNonce = Astro.locals.cspNonce;
 					aria-label="Open image"
 					data-empty-draggable
 				>
-					<img
-						src="/ci-77x96.jpg"
-						srcset="/ci-77x96.jpg 1x, /ci-154x192.jpg 2x"
-						sizes="77px"
-						data-full-src="/ci.jpg"
-						alt="Dog"
-						fetchpriority="high"
-						decoding="async"
-						width="77"
-						height="96"
-					/>
+					<picture>
+						<source
+							type="image/avif"
+							srcset="/ci-77x96.avif 1x, /ci-154x192.avif 2x"
+							sizes="77px"
+						/>
+						<source
+							type="image/webp"
+							srcset="/ci-77x96.webp 1x, /ci-154x192.webp 2x"
+							sizes="77px"
+						/>
+						<img
+							src="/ci-77x96.jpg"
+							srcset="/ci-77x96.jpg 1x, /ci-154x192.jpg 2x"
+							sizes="77px"
+							data-full-src="/ci.jpg"
+							alt="Dog"
+							fetchpriority="high"
+							decoding="async"
+							width="77"
+							height="96"
+						/>
+					</picture>
 				</button>
 			</div>
 		</main>
