@@ -23,7 +23,10 @@ const cspNonce = Astro.locals.cspNonce;
 					data-empty-draggable
 				>
 					<img
-						src="/ci.jpg"
+						src="/ci-77x96.jpg"
+						srcset="/ci-77x96.jpg 1x, /ci-154x192.jpg 2x"
+						sizes="77px"
+						data-full-src="/ci.jpg"
 						alt="Dog"
 						fetchpriority="high"
 						decoding="async"
@@ -174,8 +177,9 @@ const cspNonce = Astro.locals.cspNonce;
 
 				const openLightbox = () => {
 					select(true);
-					const src = sourceImg.currentSrc || sourceImg.src;
-					lightboxImg.src = src;
+					const fullSrc =
+						sourceImg.getAttribute("data-full-src") || sourceImg.currentSrc || sourceImg.src;
+					lightboxImg.src = fullSrc;
 					lightboxImg.alt = sourceImg.alt || "";
 
 					lightbox.hidden = false;

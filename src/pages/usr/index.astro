@@ -772,12 +772,31 @@ const cspNonce = Astro.locals.cspNonce;
           });
         };
 
-        // Prefetch projects on page load so the folder opens instantly
+        // Projects fetch can be slow (depends on edge cache + upstream), and it isn't needed
+        // for initial render/LCP. Prefetch it only after the user shows intent (hover/focus)
+        // so the folder still opens fast without adding a critical request chain.
         const projectsContainer = root.querySelector(
           '.tree__children[data-kind="projects"]'
         );
-        if (projectsContainer instanceof HTMLElement) {
-          hydrateProjects(projectsContainer);
+        const scheduleProjectsPrefetch = () => {
+          if (!(projectsContainer instanceof HTMLElement)) return;
+          const run = () => hydrateProjects(projectsContainer);
+          // Give the page a chance to paint first; fall back for browsers without rIC.
+          if ("requestIdleCallback" in window) {
+            // @ts-ignore - requestIdleCallback isn't in all TS DOM libs
+            window.requestIdleCallback(run, { timeout: 2000 });
+          } else {
+            setTimeout(run, 1200);
+          }
+        };
+
+        const projectsNode = root.querySelector('[data-node="projects"]');
+        const projectsLabel = projectsNode?.querySelector(".tree__label");
+        if (projectsLabel instanceof HTMLElement) {
+          projectsLabel.addEventListener("pointerenter", scheduleProjectsPrefetch, {
+            once: true,
+          });
+          projectsLabel.addEventListener("focus", scheduleProjectsPrefetch, { once: true });
         }
 
         // Prefetch jobs on page load so the folder opens instantly
