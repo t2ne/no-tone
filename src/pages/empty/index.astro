@@ -4,6 +4,7 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 
 const title = 'empty';
+const cspNonce = Astro.locals.cspNonce;
 ---
 
 <!doctype html>
@@ -13,18 +14,304 @@ const title = 'empty';
 	</head>
 	<body>
 		<Header />
-		<main class="page" aria-label="Empty desktop">
-			<figure class="page__figure">
-				<img
-					src="/d.jpg"
-					alt="Dog"
-					fetchpriority="high"
-					decoding="async"
-					width="236"
-					height="389"
-				/>
-			</figure>
+		<main class="desktop emptyDesktop" aria-label="Empty desktop">
+			<div class="emptyCanvas" data-empty-canvas>
+				<button
+					class="emptyDraggable"
+					type="button"
+					aria-label="Open image"
+					data-empty-draggable
+				>
+					<img
+						src="/ci.jpg"
+						alt="Dog"
+						fetchpriority="high"
+						decoding="async"
+						width="280"
+						height="349"
+					/>
+				</button>
+			</div>
 		</main>
 		<Footer />
+
+		<div class="lightbox" hidden data-lightbox>
+			<div class="lightbox__backdrop" data-lightbox-backdrop tabindex="-1">
+				<figure class="lightbox__content" aria-label="Image preview">
+					<img class="lightbox__img" data-lightbox-img alt="" />
+				</figure>
+			</div>
+		</div>
+
+		<script is:inline nonce={cspNonce}>
+			(() => {
+				const STORAGE_KEY = "empty:imagePosition:v1";
+
+				const canvas = document.querySelector("[data-empty-canvas]");
+				const draggable = document.querySelector("[data-empty-draggable]");
+				const sourceImg = draggable?.querySelector("img");
+
+				const lightbox = document.querySelector("[data-lightbox]");
+				const lightboxBackdrop = document.querySelector("[data-lightbox-backdrop]");
+				const lightboxImg = document.querySelector("[data-lightbox-img]");
+
+				if (!(canvas instanceof HTMLElement)) return;
+				if (!(draggable instanceof HTMLElement)) return;
+				if (!(sourceImg instanceof HTMLImageElement)) return;
+				if (!(lightbox instanceof HTMLElement)) return;
+				if (!(lightboxBackdrop instanceof HTMLElement)) return;
+				if (!(lightboxImg instanceof HTMLImageElement)) return;
+
+				const select = (isSelected) => {
+					draggable.classList.toggle("is-selected", Boolean(isSelected));
+				};
+
+				const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
+
+				const load = () => {
+					try {
+						const raw = localStorage.getItem(STORAGE_KEY);
+						if (!raw) return null;
+						const data = JSON.parse(raw);
+						if (!data || typeof data !== "object") return null;
+						const xRatio = Number(data.xRatio);
+						const yRatio = Number(data.yRatio);
+						if (!Number.isFinite(xRatio) || !Number.isFinite(yRatio)) return null;
+						return { xRatio, yRatio };
+					} catch {
+						return null;
+					}
+				};
+
+				const save = (pos) => {
+					try {
+						localStorage.setItem(STORAGE_KEY, JSON.stringify(pos));
+					} catch {
+						// no-op
+					}
+				};
+
+				const DEFAULT = { xRatio: 0.5, yRatio: 0.35 };
+				let position = load() ?? DEFAULT;
+
+				const TOP_GUARD = 16;
+				const SIDE_GUARD = 16;
+
+				const getEnvironment = () => {
+					const canvasRect = canvas.getBoundingClientRect();
+					const width = canvasRect.width || window.innerWidth;
+					const height = canvasRect.height || window.innerHeight;
+
+					const toCanvasRect = (rect) => ({
+						left: rect.left - canvasRect.left,
+						top: rect.top - canvasRect.top,
+						right: rect.right - canvasRect.left,
+						bottom: rect.bottom - canvasRect.top,
+					});
+
+					const barriers = [];
+					const toggleEl = document.querySelector(".topbar__toggle");
+					const footerNavEl = document.querySelector(".bottombar__nav");
+
+					if (toggleEl instanceof HTMLElement) {
+						const r = toCanvasRect(toggleEl.getBoundingClientRect());
+						barriers.push({
+							left: r.left - 12,
+							top: r.top - 12,
+							right: r.right + 12,
+							bottom: r.bottom + 12,
+						});
+					}
+
+					if (footerNavEl instanceof HTMLElement) {
+						const r = toCanvasRect(footerNavEl.getBoundingClientRect());
+						barriers.push({
+							left: r.left - 16,
+							top: r.top - 16,
+							right: r.right + 16,
+							bottom: r.bottom + 16,
+						});
+					}
+
+					return { width, height, barriers };
+				};
+
+				const applyPosition = (env) => {
+					const iconWidth = draggable.offsetWidth;
+					const iconHeight = draggable.offsetHeight;
+					const maxX = Math.max(0, env.width - iconWidth - SIDE_GUARD);
+					const maxY = Math.max(0, env.height - iconHeight - SIDE_GUARD);
+
+					let x = position.xRatio * env.width;
+					let y = position.yRatio * env.height;
+
+					x = clamp(x, SIDE_GUARD, maxX);
+					y = clamp(y, TOP_GUARD, maxY);
+
+					position = {
+						xRatio: env.width ? x / env.width : position.xRatio,
+						yRatio: env.height ? y / env.height : position.yRatio,
+					};
+
+					draggable.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+				};
+
+				const syncReady = () => {
+					const env = getEnvironment();
+					applyPosition(env);
+					canvas.classList.add("emptyCanvas--ready");
+				};
+
+				if (sourceImg.complete) {
+					requestAnimationFrame(syncReady);
+				} else {
+					sourceImg.addEventListener("load", () => requestAnimationFrame(syncReady), {
+						once: true,
+					});
+				}
+
+				let suppressNextClick = false;
+
+				const openLightbox = () => {
+					select(true);
+					const src = sourceImg.currentSrc || sourceImg.src;
+					lightboxImg.src = src;
+					lightboxImg.alt = sourceImg.alt || "";
+
+					lightbox.hidden = false;
+					document.documentElement.classList.add("is-lightbox-open");
+					document.body.style.overflow = "hidden";
+
+					lightboxBackdrop.focus();
+				};
+
+				const closeLightbox = () => {
+					lightbox.hidden = true;
+					document.documentElement.classList.remove("is-lightbox-open");
+					document.body.style.overflow = "";
+				};
+
+				window.addEventListener("keydown", (event) => {
+					if (event.key !== "Escape") return;
+					if (lightbox.hidden) return;
+					closeLightbox();
+				});
+
+				lightboxBackdrop.addEventListener("click", (event) => {
+					if (event.target !== lightboxBackdrop) return;
+					closeLightbox();
+				});
+
+				// Deselect when clicking empty space (like the home desktop)
+				canvas.addEventListener("pointerdown", (event) => {
+					const target = event.target;
+					if (!(target instanceof Element)) return;
+					if (!lightbox.hidden) return;
+					if (!target.closest("[data-empty-draggable]")) {
+						select(false);
+					}
+				});
+
+				// Click-to-open (but never after a drag)
+				draggable.addEventListener("click", () => {
+					if (suppressNextClick) {
+						suppressNextClick = false;
+						return;
+					}
+					openLightbox();
+				});
+
+				// Dragging
+				draggable.addEventListener("pointerdown", (event) => {
+					if (event.button !== 0) return;
+					event.preventDefault();
+					select(true);
+
+					const env = getEnvironment();
+					const start = {
+						x: position.xRatio * env.width,
+						y: position.yRatio * env.height,
+					};
+					const startX = event.clientX;
+					const startY = event.clientY;
+					let moved = false;
+
+					draggable.setPointerCapture(event.pointerId);
+					draggable.classList.add("is-dragging");
+					draggable.style.zIndex = "10";
+
+					const onMove = (e) => {
+						e.preventDefault();
+						const dx = e.clientX - startX;
+						const dy = e.clientY - startY;
+						if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+
+						const maxX = Math.max(0, env.width - draggable.offsetWidth - SIDE_GUARD);
+						const maxY = Math.max(
+							0,
+							env.height - draggable.offsetHeight - SIDE_GUARD
+						);
+
+						let nextX = clamp(start.x + dx, SIDE_GUARD, maxX);
+						let nextY = clamp(start.y + dy, TOP_GUARD, maxY);
+
+						const iconRect = {
+							left: nextX,
+							top: nextY,
+							right: nextX + draggable.offsetWidth,
+							bottom: nextY + draggable.offsetHeight,
+						};
+
+						for (const barrier of env.barriers) {
+							const intersects = !(
+								iconRect.right < barrier.left ||
+								iconRect.left > barrier.right ||
+								iconRect.bottom < barrier.top ||
+								iconRect.top > barrier.bottom
+							);
+
+							if (intersects) {
+								const iconCenterX = (iconRect.left + iconRect.right) / 2;
+								const barrierCenterX = (barrier.left + barrier.right) / 2;
+								if (iconCenterX <= barrierCenterX) {
+									nextX = barrier.left - draggable.offsetWidth - 8;
+								} else {
+									nextX = barrier.right + 8;
+								}
+							}
+						}
+
+						nextX = clamp(nextX, SIDE_GUARD, maxX);
+						nextY = clamp(nextY, TOP_GUARD, maxY);
+
+						position = {
+							xRatio: env.width ? nextX / env.width : 0,
+							yRatio: env.height ? nextY / env.height : 0,
+						};
+						draggable.style.transform = `translate3d(${nextX}px, ${nextY}px, 0)`;
+					};
+
+					const onUp = () => {
+						draggable.classList.remove("is-dragging");
+						draggable.style.zIndex = "";
+						save(position);
+						window.removeEventListener("pointermove", onMove);
+						window.removeEventListener("pointerup", onUp);
+
+						// Prevent accidental open after drag
+						if (moved) suppressNextClick = true;
+					};
+
+					window.addEventListener("pointermove", onMove);
+					window.addEventListener("pointerup", onUp, { once: true });
+				});
+
+				window.addEventListener("resize", () => {
+					const env = getEnvironment();
+					applyPosition(env);
+					save(position);
+				});
+			})();
+		</script>
 	</body>
 </html>

@@ -195,7 +195,9 @@ hr {
   margin: 0 auto;
   font-size: 16px;
   letter-spacing: 0.02em;
-  pointer-events: auto;
+  /* Let desktop icons near the top be clickable/draggable.
+     Re-enable pointer events only on actual controls below. */
+  pointer-events: none;
 }
 
 .topbar__back {
@@ -208,6 +210,7 @@ hr {
   text-align: left;
   justify-self: start;
   width: auto;
+  pointer-events: auto;
 }
 
 .topbar__back[hidden] {
@@ -225,6 +228,7 @@ hr {
   font: inherit;
   padding: 4px 10px;
   cursor: pointer;
+  pointer-events: auto;
 }
 
 .topbar__toggle:hover {
@@ -381,6 +385,91 @@ hr {
   .page__figure {
     max-width: 190px;
   }
+}
+
+.emptyCanvas {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.emptyCanvas .emptyDraggable {
+  position: absolute;
+  left: 0;
+  top: 0;
+  border: none;
+  padding: 0;
+  background: transparent;
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+  will-change: transform;
+  opacity: 0;
+  color: inherit;
+}
+
+.emptyCanvas.emptyCanvas--ready .emptyDraggable {
+  opacity: 1;
+}
+
+.emptyCanvas .emptyDraggable.is-dragging {
+  cursor: grabbing;
+}
+
+.emptyCanvas .emptyDraggable.is-selected::before {
+  content: "";
+  position: absolute;
+  inset: -6px -6px;
+  border: 2px dotted var(--selection-border);
+  border-radius: 2px;
+  pointer-events: none;
+}
+
+.emptyCanvas .emptyDraggable img {
+  display: block;
+  image-rendering: auto;
+  /* Slightly bigger than folder glyphs (~72px), but still small */
+  width: 77px;
+  height: auto;
+}
+
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+}
+
+.lightbox[hidden] {
+  display: none;
+}
+
+.lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  padding: 24px;
+}
+
+.lightbox__content {
+  margin: 0;
+}
+
+.lightbox__img {
+  max-width: min(92vw, 980px);
+  max-height: 92vh;
+  width: auto;
+  height: auto;
+  image-rendering: auto;
+  border-radius: 8px;
+}
+
+html.is-lightbox-open .topbar__nav,
+html.is-lightbox-open .bottombar__nav {
+  pointer-events: none;
 }
 
 .note__date {
