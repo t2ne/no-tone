@@ -3,7 +3,7 @@ const isHome = Astro.url.pathname === "/";
 const cspNonce = Astro.locals.cspNonce;
 ---
 
-<header class={`topbar${isHome ? " topbar--home" : ""}`}>
+<header class="topbar">
   <nav
     class={`topbar__nav${isHome ? " topbar__nav--home" : ""}`}
     aria-label="Primary"

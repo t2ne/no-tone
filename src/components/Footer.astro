@@ -1,11 +1,9 @@
 ---
 const pathname = Astro.url.pathname;
-const isTransparent = pathname === "/" || pathname.startsWith("/usr");
-
 const cspNonce = Astro.locals.cspNonce;
 ---
 
-<footer class={`bottombar${isTransparent ? " bottombar--home" : ""}`}>
+<footer class="bottombar">
   <nav class="bottombar__nav" aria-label="Social">
     <a
       class="bottombar__link"

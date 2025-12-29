@@ -183,10 +183,6 @@ hr {
   z-index: 50;
   padding: 24px 28px;
   pointer-events: none;
-  background: var(--bg);
-}
-
-.topbar--home {
   background: transparent;
 }
 
@@ -255,7 +251,7 @@ hr {
   display: flex;
   justify-content: center;
   pointer-events: none;
-  background: var(--bg);
+  background: transparent;
 }
 
 .bottombar__nav {
@@ -282,10 +278,6 @@ hr {
 .bottombar__sep {
   margin: 0 8px;
   color: var(--chrome-fg);
-}
-
-.bottombar--home {
-  background: transparent;
 }
 
 .headerLink {
