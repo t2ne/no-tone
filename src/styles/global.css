@@ -496,6 +496,11 @@ html.is-lightbox-open .bottombar__nav {
   margin: 0;
   padding: 0;
   font-size: 14px;
+  /* Tree connector tuning (adjust these without changing the connector logic) */
+  --tree-indent: 20px; /* horizontal distance from vertical line to item content */
+  --tree-nudge: 3.5px; /* shifts the whole connector column to the right */
+  --tree-gap: 5px; /* gap between elbow end and the chevron/text */
+  --tree-elbow-y: 0.9em; /* vertical position of the elbow */
 }
 
 .tree__item {
@@ -540,18 +545,33 @@ html.is-lightbox-open .bottombar__nav {
 
 .tree__children {
   list-style: none;
-  margin: 0;
-  padding: 0 0 0 20px;
+  margin: 0 0 0 var(--tree-nudge);
+  padding: 0 0 0 var(--tree-indent);
   border-left: 1px solid var(--border);
 }
 
 .tree__children .tree__item::before {
   content: "";
   position: absolute;
-  left: -20px;
-  width: 20px;
-  top: 0.9em;
+  left: calc(-1 * var(--tree-indent));
+  width: calc(var(--tree-indent) - var(--tree-gap));
+  top: var(--tree-elbow-y);
   border-bottom: 1px solid var(--border);
+}
+
+/* Classic tree: last item should be a corner (└), not a dangling vertical line */
+.tree__children > .tree__item:last-child::after {
+  content: "";
+  position: absolute;
+  /* Cover the parent's border-left inside this last row */
+  left: calc(-1 * var(--tree-indent) - 2px);
+  /* Start just BELOW the elbow so the corner junction stays continuous */
+  top: calc(var(--tree-elbow-y) + 1px);
+  bottom: -6px; /* be generous to fully cover anti-aliased pixels */
+  width: 7px; /* wider than the 1px border so it always hides it */
+  background: var(--bg);
+  pointer-events: none;
+  z-index: 1;
 }
 
 .tree__item--file a,
