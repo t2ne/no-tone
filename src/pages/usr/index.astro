@@ -258,6 +258,73 @@ const cspNonce = Astro.locals.cspNonce;
                 </li>
               </ul>
             </li>
+
+            <li class="tree__item tree__item--folder" data-node="networking">
+              <button class="tree__label" type="button">
+                <span class="tree__chevron" aria-hidden="true">›</span><span
+                  class="tree__name">networking/</span
+                >
+              </button>
+              <ul class="tree__children" hidden>
+                <li class="tree__item tree__item--file">
+                  <a
+                    href="https://tailscale.com/"
+                    target="_blank"
+                    rel="noreferrer">tailscale</a
+                  >
+                </li>
+              </ul>
+            </li>
+
+            <li class="tree__item tree__item--folder" data-node="homelab">
+              <button class="tree__label" type="button">
+                <span class="tree__chevron" aria-hidden="true">›</span><span
+                  class="tree__name">homelab/</span
+                >
+              </button>
+              <ul class="tree__children" hidden>
+                <li class="tree__item tree__item--file">
+                  <a
+                    href="https://nginxproxymanager.com/"
+                    target="_blank"
+                    rel="noreferrer">nginx proxy manager</a
+                  >
+                </li>
+                <li class="tree__item tree__item--file">
+                  <a
+                    href="https://www.portainer.io/"
+                    target="_blank"
+                    rel="noreferrer">portainer</a
+                  >
+                </li>
+                <li class="tree__item tree__item--file">
+                  <a
+                    href="https://github.com/dani-garcia/vaultwarden"
+                    target="_blank"
+                    rel="noreferrer">vaultwarden</a
+                  >
+                </li>
+                <li class="tree__item tree__item--file">
+                  <a
+                    href="https://joplinapp.org/"
+                    target="_blank"
+                    rel="noreferrer">joplin</a
+                  >
+                </li>
+                <li class="tree__item tree__item--file">
+                  <a href="https://immich.app/" target="_blank" rel="noreferrer"
+                    >immich</a
+                  >
+                </li>
+                <li class="tree__item tree__item--file">
+                  <a
+                    href="https://opencloud.eu/"
+                    target="_blank"
+                    rel="noreferrer">opencloud</a
+                  >
+                </li>
+              </ul>
+            </li>
             <li class="tree__item tree__item--folder" data-node="design">
               <button class="tree__label" type="button">
                 <span class="tree__chevron" aria-hidden="true">›</span><span
@@ -359,7 +426,9 @@ const cspNonce = Astro.locals.cspNonce;
                 >
               </button>
               <ul class="tree__children" hidden>
-                <li class="tree__item tree__item--file">english-fluent-c1.txt</li>
+                <li class="tree__item tree__item--file">
+                  english-fluent-c1.txt
+                </li>
                 <li class="tree__item tree__item--file">???-native.txt</li>
               </ul>
             </li>
@@ -408,7 +477,7 @@ const cspNonce = Astro.locals.cspNonce;
 
         // Ensure dynamically-created nodes receive the same Astro scope attribute
         const scopeAttr = Array.from(root.attributes).find((attr) =>
-          attr.name.startsWith("data-astro-cid-")
+          attr.name.startsWith("data-astro-cid-"),
         );
         const applyScope = (el) => {
           if (!scopeAttr || !el || !(el instanceof Element)) return;
@@ -661,7 +730,7 @@ const cspNonce = Astro.locals.cspNonce;
           });
 
           const languages = Array.from(groups.keys()).sort((a, b) =>
-            a.localeCompare(b)
+            a.localeCompare(b),
           );
 
           languages.forEach((language) => {
@@ -776,7 +845,7 @@ const cspNonce = Astro.locals.cspNonce;
         // for initial render/LCP. Prefetch it only after the user shows intent (hover/focus)
         // so the folder still opens fast without adding a critical request chain.
         const projectsContainer = root.querySelector(
-          '.tree__children[data-kind="projects"]'
+          '.tree__children[data-kind="projects"]',
         );
         const scheduleProjectsPrefetch = () => {
           if (!(projectsContainer instanceof HTMLElement)) return;
@@ -793,21 +862,29 @@ const cspNonce = Astro.locals.cspNonce;
         const projectsNode = root.querySelector('[data-node="projects"]');
         const projectsLabel = projectsNode?.querySelector(".tree__label");
         if (projectsLabel instanceof HTMLElement) {
-          projectsLabel.addEventListener("pointerenter", scheduleProjectsPrefetch, {
+          projectsLabel.addEventListener(
+            "pointerenter",
+            scheduleProjectsPrefetch,
+            {
+              once: true,
+            },
+          );
+          projectsLabel.addEventListener("focus", scheduleProjectsPrefetch, {
             once: true,
           });
-          projectsLabel.addEventListener("focus", scheduleProjectsPrefetch, { once: true });
         }
 
         // Prefetch jobs on page load so the folder opens instantly
-        const jobsContainer = root.querySelector('.tree__children[data-kind="jobs"]');
+        const jobsContainer = root.querySelector(
+          '.tree__children[data-kind="jobs"]',
+        );
         if (jobsContainer instanceof HTMLElement) {
           hydrateJobs(jobsContainer);
         }
 
         // Prefetch education on page load so the folder opens instantly
         const educationContainer = root.querySelector(
-          '.tree__children[data-kind="education"]'
+          '.tree__children[data-kind="education"]',
         );
         if (educationContainer instanceof HTMLElement) {
           hydrateEducation(educationContainer);
