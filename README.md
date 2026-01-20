@@ -2,6 +2,8 @@
 
 Source code for my personal website [**no-tone**](https://no-tone.com).
 
+<img width="1440" height="900" alt="Image" src="https://github.com/user-attachments/assets/43c82814-3f4f-4fd7-ad56-e39ac50896e5" />
+
 Built with [Astro](https://astro.build) and deployed to [Cloudflare Workers](https://developers.cloudflare.com/workers/).
 
 ## Tech stack
