@@ -19,46 +19,11 @@ const cspNonce = Astro.locals.cspNonce;
       rel="noreferrer">projects</a
     >
     <span class="bottombar__sep" aria-hidden="true">/</span>
-    <button class="bottombar__link bottombar__contact" type="button"
-      >contact</button
+    <a
+      class="bottombar__link"
+      href="https://domaincontact.registrar.cloudflare.com/no-tone.com"
+      target="_blank"
+      rel="noreferrer">contact</a
     >
   </nav>
 </footer>
-
-<script is:inline nonce={cspNonce}>
-  (() => {
-    const button = document.querySelector(".bottombar__contact");
-    if (!button) return;
-
-    const EMAIL = "msg@no-tone.com";
-    let resetTimeout;
-
-    const setLabel = (text) => {
-      button.textContent = text;
-    };
-
-    setLabel("contact");
-
-    button.addEventListener("click", async () => {
-      clearTimeout(resetTimeout);
-      try {
-        if (navigator.clipboard?.writeText) {
-          await navigator.clipboard.writeText(EMAIL);
-        } else {
-          const area = document.createElement("textarea");
-          area.value = EMAIL;
-          area.style.position = "fixed";
-          area.style.opacity = "0";
-          document.body.appendChild(area);
-          area.select();
-          document.execCommand("copy");
-          document.body.removeChild(area);
-        }
-        setLabel("copied");
-      } catch {
-        setLabel("copy failed");
-      }
-      resetTimeout = setTimeout(() => setLabel("contact"), 1500);
-    });
-  })();
-</script>
